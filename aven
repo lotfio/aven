@@ -2,14 +2,15 @@
 
 <?php 
 
-
 // composer autoloader
 // if your routes file includes this file 
 // no need to include it again
-require 'vendor/autoload.php';
+// if you change this file location make sure 
+// to update these links
+require '../autoload.php';
 
 // replace this file with your routes file
-require 'index.php';
+require '../../routes/web.php';
 
 
 /* ----------------------------------- */
