@@ -1,0 +1,34 @@
+#!/usr/bin/env php
+
+<?php 
+
+
+// composer autoloader
+// if your routes file includes this file 
+// no need to include it again
+require 'vendor/autoload.php';
+
+// replace this file with your routes file
+require 'index.php';
+
+
+/* ----------------------------------- */
+$start_memory   = memory_get_usage();
+$time_start     = microtime(true);
+
+$cli = new Aven\Cli; // initiate application
+$cli->run();        // start application
+
+$time_end       = microtime(true);
+$used           = memory_get_usage() - $start_memory;
+
+// time and memory info
+$cli->writeLn("\033[0;33mTime: " . round(($time_end - $time_start)  * 1000) . " ms, Memory : ". 
+    convert($used) ."\033[0m \n\n");
+
+
+function convert($size)
+{
+    $unit=array('B','KB','MB','GB','TB','PB');
+    return @round($size/pow(1024,($i=floor(log($size,1024)))),2).' '.$unit[$i];
+}
