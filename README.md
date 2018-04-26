@@ -198,14 +198,14 @@ make sure to :
 Your `vendo/bin/aven` should have these two lines:
 
 ```php
-require 'vendor/autoload.php';
-require '../../routes/myRoutesFile.php';
+require '../autoload.php';
+require '../../routes/myRoutesFile.php'; // routes file
 
 ```
 
 **Available Commands :**
 
-Assume we have moved `vendor/bin/Aven` to `../../` our project location and we have added the routes file.
+Assume we have moved `vendor/bin/Aven` to `../../` our project location and we have added the routes and the autoload files.
 
 **1-routes :** this command will list all defined routes giving you the ability to debug and see your routing table : 
 
