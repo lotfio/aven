@@ -12,7 +12,7 @@
         <img src="https://img.shields.io/badge/PHP-7-3498db.svg" alt="PHP 7" title="PHP 7">
     </a>    
     <a href="#">
-        <img src="https://img.shields.io/badge/version-0.2.0-27ae60.svg" alt="version" title="version">
+        <img src="https://img.shields.io/badge/version-0.2.1-27ae60.svg" alt="version" title="version">
     </a>
     <a href="#">
         <img src="https://img.shields.io/badge/build-passing-e91e63.svg" alt="build" title="build">
@@ -21,7 +21,7 @@
         <img src="https://img.shields.io/badge/coverage-50%25-95a5a6.svg" alt="coverage" title="coverage">
     </a>
     <a href="#">
-        <img src="https://img.shields.io/badge/downloads-100-ff5722.svg" alt="downloads" title="downloads">
+        <img src="https://img.shields.io/badge/downloads-1k-ff5722.svg" alt="downloads" title="downloads">
     </a>
 </p>
 
