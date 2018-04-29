@@ -34,7 +34,7 @@ class DispatcherTest extends TestCase
      */
     public function testDispatchRoutesIsReturningValidObject()
     {
-        $dispatcher = new \Aven\Dispatcher(new Serializer);
+        $dispatcher = new \Aven\Dispatcher;
 
         $route = $dispatcher->dispatch('get', array(
             "index/action/{id}",
