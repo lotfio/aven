@@ -134,7 +134,7 @@ Don't forget to `Aven::init()` initialize the router, if you are using the route
 
 **Note :**
 
-By default PHP supports only the `GET` and `POST` methods so inorder to use other `HTTP METHODS` append a hidden input to your request named `_method` with the desired `HTTP METHOD` like so :
+As HTML supports only the `GET` and `POST` from methods it is handy to append a hidden input to your form named `_method` to be able to use other `HTTP METHODS` and to surpass this limitation :
 
 ```html
   <form action="" method="POST">
