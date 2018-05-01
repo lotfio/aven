@@ -1,14 +1,16 @@
-<?php namespace Tests\Unit\Stubs;
+<?php
+
+namespace Tests\Unit\Stubs;
 
 class TestController
 {
     public function index()
     {
-        return "from Test controller index method";
+        return 'from Test controller index method';
     }
 
     public static function staticmethodCall()
-    {   
-        return "from Test controller static method";
+    {
+        return 'from Test controller static method';
     }
 }

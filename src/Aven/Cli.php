@@ -1,7 +1,9 @@
-<?php namespace Aven;
+<?php
 
-/**
- * Aven       Robust PHP Router 
+namespace Aven;
+
+/*
+ * Aven       Robust PHP Router
  *
  * @package   Aven
  * @author    Lotfio Lakehal <lotfiolakehal@gmail.com>
@@ -12,42 +14,40 @@
 
 use Aven\Facades\Aven;
 
-
 class Cli
 {
     /**
-     * routes collection
-     * 
+     * routes collection.
+     *
      * @var array
      */
     public $routes;
 
     /**
-     * cli parameters
-     * 
+     * cli parameters.
+     *
      * @var array
      */
     public $commands;
 
     /**
-     * constructor
+     * constructor.
      */
     public function __construct()
     {
-        $this->routes = Aven::fromCache('routes.cache') ? Aven::fromCache('routes.cache'): Aven::getRoutes();
+        $this->routes = Aven::fromCache('routes.cache') ? Aven::fromCache('routes.cache') : Aven::getRoutes();
 
         $this->setCliCommands(); // init commands
     }
 
     /**
-     * run cli app method
-     * 
+     * run cli app method.
+     *
      * @return void
      */
     public function run()
     {
-        if(empty($this->commands)) {
-
+        if (empty($this->commands)) {
             $this->hiAven(); // set logo
             return;
         }
@@ -56,25 +56,26 @@ class Cli
     }
 
     /**
-     * set cli params
-     * 
+     * set cli params.
+     *
      * @return void
      */
     public function setCliCommands()
     {
-        global $argv; unset($argv[0]);
+        global $argv;
+        unset($argv[0]);
 
         $this->commands = array_values($argv);
     }
 
     /**
-     * hi message 
-     * 
+     * hi message.
+     *
      * @return void
      */
     public function hiAven()
     {
-        $h="    ___                      ____              __
+        $h = "    ___                      ____              __
    /   |_   _____  ____     / __ \____  __  __/ /____  _____
   / /| | | / / _ \/ __ \   / /_/ / __ \/ / / / __/ _ \/ ___/
  / ___ | |/ /  __/ / / /  / _, _/ /_/ / /_/ / /_/  __/ /    
@@ -93,9 +94,10 @@ class Cli
     }
 
     /**
-     * write to console output method
-     * 
-     * @param  string $line
+     * write to console output method.
+     *
+     * @param string $line
+     *
      * @return mixed
      */
     public function writeLn($line)
@@ -104,31 +106,31 @@ class Cli
     }
 
     /**
-     * check requested command 
-     * 
-     * @param  string $command 
-     * @return void          
+     * check requested command.
+     *
+     * @param string $command
+     *
+     * @return void
      */
     public function wants($command)
     {
-        switch ($this->commands[0]) 
-        {
+        switch ($this->commands[0]) {
 
-        case 'cache':       $this->cache(); 
+        case 'cache':       $this->cache();
             break;
-        case 'cache:clear': $this->clearCache(); 
+        case 'cache:clear': $this->clearCache();
             break;
-        case 'routes':      $this->listRoutes(); 
+        case 'routes':      $this->listRoutes();
             break;
-           
-        default: 
+
+        default:
             exit($this->noCommand()); break;
         }
     }
 
     /**
-     * no command match 
-     * 
+     * no command match.
+     *
      * @return void
      */
     public function noCommand()
@@ -137,7 +139,7 @@ class Cli
     }
 
     /**
-     * cache routes
+     * cache routes.
      *
      * @return void
      */
@@ -145,27 +147,27 @@ class Cli
     {
         $dir = $this->checkLocation();
 
-        $file = $dir . "/routes.cache";
+        $file = $dir.'/routes.cache';
 
         foreach ($this->routes as $route) { // dont cache closures
-            
-            if($route->action instanceof \Closure) {
+
+            if ($route->action instanceof \Closure) {
                 $this->writeLn("\033[0;31mCan not cache Closures ! use controller methods instead. \033[0m \n\n");
                 exit(0);
             }
         }
 
-        $file = fopen($file, "w+");
+        $file = fopen($file, 'w+');
         fwrite($file, json_encode($this->routes));
 
-        $this->writeLn("Caching Routes ! ");
+        $this->writeLn('Caching Routes ! ');
         $this->waiter();
         $this->writeLn("\n\n\033[0;32mRoutes cached successfully to $dir directory ! \033[0m \n\n");
     }
 
     /**
-     * clear caching 
-     * 
+     * clear caching.
+     *
      * @return void
      */
     public function clearCache()
@@ -174,50 +176,49 @@ class Cli
 
         $files = glob($dir.'/*'); // get all files
 
-        foreach($files as $file){ // iterate files
+        foreach ($files as $file) { // iterate files
 
-            if(is_file($file)) { unlink($file); // delete file
+            if (is_file($file)) {
+                unlink($file); // delete file
             }
         }
 
-        $this->writeLn("Clearing cache ! ");
+        $this->writeLn('Clearing cache ! ');
         $this->waiter();
         $this->writeLn("\n\n\033[0;32mCache cleared successfully !\033[0m \n\n");
-
     }
 
     /**
-     * list routes method
-     * 
+     * list routes method.
+     *
      * @return void
      */
     public function listRoutes()
     {
         $tbl = new \Console_Table();
 
-        $tbl->setHeaders(array('ID','METHOD', 'URI', 'PARAMETERS', 'FILTERS', 'ACTION'));
+        $tbl->setHeaders(['ID', 'METHOD', 'URI', 'PARAMETERS', 'FILTERS', 'ACTION']);
         $id = 1;
         sort($this->routes);
-        
+
         foreach ($this->routes as $route) {
-
-            $param = "";
-            if(preg_match_all("/\<.*?\>+/", $route->pattern, $matches)) {
-                $param = str_replace('<', '', implode(",", $matches[0]));
+            $param = '';
+            if (preg_match_all("/\<.*?\>+/", $route->pattern, $matches)) {
+                $param = str_replace('<', '', implode(',', $matches[0]));
                 $param = str_replace('>', '', $param);
-            }          
+            }
 
-            $uri = str_replace("(?P<", "", $route->pattern);
-            $uri = str_replace(">.*)", "", $uri);
-            $uri = str_replace("#", "", $uri);
-            $uri = str_replace("^", "", $uri);
-            $uri = str_replace("$", "", $uri);
+            $uri = str_replace('(?P<', '', $route->pattern);
+            $uri = str_replace('>.*)', '', $uri);
+            $uri = str_replace('#', '', $uri);
+            $uri = str_replace('^', '', $uri);
+            $uri = str_replace('$', '', $uri);
 
-            $uri = (!empty($uri)) ? $uri : "/";
-            $action  = ($route->action instanceof \Closure) ? "Closure" : $route->action; 
+            $uri = (!empty($uri)) ? $uri : '/';
+            $action = ($route->action instanceof \Closure) ? 'Closure' : $route->action;
             $filter = (isset($route->filters) && !empty($route->filters)) ? implode(',', (array) $route->filters) : '';
 
-            $tbl->addRow([$id,$route->method, $uri, $param, $filter, $action]);
+            $tbl->addRow([$id, $route->method, $uri, $param, $filter, $action]);
             $id++;
         }
 
@@ -225,38 +226,36 @@ class Cli
     }
 
     /**
-     * waiter method
-     * 
+     * waiter method.
+     *
      * @return void
      */
     public function waiter()
     {
-        for ($i=0; $i < 20 ; $i++) { 
-            
-            $this->writeLn(".");
+        for ($i = 0; $i < 20; $i++) {
+            $this->writeLn('.');
             usleep(10000);
         }
     }
 
     /**
-     * check location method
-     * 
+     * check location method.
+     *
      * @return string
      */
     public function checkLocation()
     {
         $dir = rtrim(Aven::getConfig('cache'), '/');
 
-        if(!is_dir($dir)) {
-            $this->writeLn("\033[0;31mDirectory $dir not found ! \033[0m\n\n"); 
+        if (!is_dir($dir)) {
+            $this->writeLn("\033[0;31mDirectory $dir not found ! \033[0m\n\n");
             exit(0);
         }
-        if(!is_writable($dir)) { 
+        if (!is_writable($dir)) {
             $this->writeLn("\033[0;31mYou don't have permissions to cahche routes on this directory $dir !\033[0m\n\n");
             exit(0);
         }
 
         return $dir;
     }
-
 }
