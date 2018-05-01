@@ -1,33 +1,28 @@
 <?php
 
 /**
- * Aven          Robust PHP Router 
+ * Aven          Robust PHP Router.
  *
- * @package      Aven
  * @author       Lotfio Lakehal <lotfiolakehal@gmail.com>
  * @copyright    2016 Lotfio Lakehal
  * @license      MIT
- * @link         https://github.com/lotfio/aven
  *
+ * @link         https://github.com/lotfio/aven
  */
-
 use PHPUnit\Framework\TestCase;
 
 class CliTest extends TestCase
 {
     private $cli;
 
-    /**
-     * 
-     */
     public function setUp()
     {
-        $this->cli = new \Aven\Cli;
+        $this->cli = new \Aven\Cli();
     }
 
     /**
-     * test set command is creating an array of commands
-     * 
+     * test set command is creating an array of commands.
+     *
      * @return void
      */
     public function testsetCliCommandsIsSteeingCommands()
@@ -36,7 +31,8 @@ class CliTest extends TestCase
     }
 
     /**
-     * test write line method
+     * test write line method.
+     *
      * @return void
      */
     public function testWriteLineMethod()
@@ -44,14 +40,14 @@ class CliTest extends TestCase
         $cli = $this->createMock(\Aven\Cli::class);
 
         $cli->method('writeLn')->will($this->returnArgument(0));
-        
+
         $this->expectOutputString('from console');
         echo $cli->writeLn('from console');
-
     }
 
     /**
-     *  test wants
+     *  test wants.
+     *
      * @return void
      */
     public function testWanstIsCallinTheRightMethod()
@@ -72,7 +68,8 @@ class CliTest extends TestCase
     }
 
     /**
-     * test no command
+     * test no command.
+     *
      * @return void
      */
     public function testNoCommandMethod()
@@ -84,5 +81,4 @@ class CliTest extends TestCase
 
         $this->assertEquals($cli->noCommand(), 'Command not found !');
     }
-
 }

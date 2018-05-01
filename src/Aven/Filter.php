@@ -1,7 +1,9 @@
-<?php namespace Aven;
+<?php
 
-/**
- * Aven       Robust PHP Router 
+namespace Aven;
+
+/*
+ * Aven       Robust PHP Router
  *
  * @package   Aven
  * @author    Lotfio Lakehal <lotfiolakehal@gmail.com>
@@ -10,31 +12,31 @@
  * @link      https://github.com/lotfio/aven
  */
 
+use Aven\Contracts\FilterInterface;
 use Aven\Exception\NotFoundException;
 use Aven\Exception\RegExMisMatchException;
-use Aven\Contracts\FilterInterface;
 
 class Filter implements FilterInterface
 {
     /**
-     * route filters
-     * 
+     * route filters.
+     *
      * @var array
      */
     public $filters = [];
 
     /**
-     * filters order array
-     * 
+     * filters order array.
+     *
      * @var array
      */
     public $filtersOrder = [];
 
-
     /**
-     * filter method
-     * 
-     * @param  array $filters parameters filters
+     * filter method.
+     *
+     * @param array $filters parameters filters
+     *
      * @return void
      */
     public function setFilters($filters)
@@ -48,25 +50,22 @@ class Filter implements FilterInterface
 
     /**
      * order filters method
-     * unset empty filters that was set by __call method
+     * unset empty filters that was set by __call method.
      *
      * @return void
      */
     public function orderFilters()
     {
-
-        if(count($this->filtersOrder) > 0) // if more than one route 
-        {
+        if (count($this->filtersOrder) > 0) { // if more than one route
             foreach ($this->filtersOrder as $key => $value) {
-            
                 unset($this->filters[$value]); // unset empty filter that was set by __call
             }
         }
     }
 
     /**
-     * get filters method
-     * 
+     * get filters method.
+     *
      * @return array filters
      */
     public function getFilters()
@@ -77,9 +76,10 @@ class Filter implements FilterInterface
     }
 
     /**
-     * match filters with routes
-     * 
-     * @param  array $routes routes array
+     * match filters with routes.
+     *
+     * @param array $routes routes array
+     *
      * @return void
      */
     public function matchFilters($routes)
@@ -87,7 +87,6 @@ class Filter implements FilterInterface
         $i = 0;
 
         foreach ($routes as $route) {
-
             $route->filters = $this->getFilters()[$i];
 
             $i++;
@@ -95,35 +94,32 @@ class Filter implements FilterInterface
     }
 
     /**
-     * filter parameters with regular expressions
+     * filter parameters with regular expressions.
      *
      * @param  $route
+     *
      * @throws \Exception
      */
     public function filterRegEx($route)
     {
-        $filters = $route->filters; // route filters 
-        $params  = $route->params; // route parameters 
+        $filters = $route->filters; // route filters
+        $params = $route->params; // route parameters
 
-        if(!empty($filters)) // validate routes 
-        {
-            foreach ($params as $param) { // null means optional 
-                
-                if(!is_null($param)) // not default 
-                {
+        if (!empty($filters)) { // validate routes
+            foreach ($params as $param) { // null means optional
+
+                if (!is_null($param)) { // not default
                     foreach ($filters as $key => $regex) {
-
-                        if(!isset($params[$key])) { 
+                        if (!isset($params[$key])) {
                             throw new NotFoundException("Error value of $key not found in parameters array", 500);
                         }
 
-                        if(!preg_match($regex, $params[$key])) { 
+                        if (!preg_match($regex, $params[$key])) {
                             throw new RegExMisMatchException("Error regular expression $regex != $params[$key]", 500);
-                        }            
+                        }
                     }
                 }
             }
-        } 
+        }
     }
-
 }
