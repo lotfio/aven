@@ -1,35 +1,55 @@
-#!/usr/bin/env php
+#!/usr/bin/php
+<?php declare(strict_types=1);
 
-<?php 
+/**
+ *
+ * @author    <contact@lotfio.net>
+ * @package   Conso PHP Console Creator
+ * @version   0.1.0
+ * @license   MIT
+ * @category  CLI
+ * @copyright 2019 Lotfio Lakehal
+ */
+
+require 'vendor/autoload.php';
+
+use Conso\Input;
+use Conso\Output;
+use Conso\Config;
+
+/**
+ * load config
+ */
+Config::load();
+
+/**
+ * adding custom config
+ * example:
+ * COMMANDS  => your commands dir
+ * NAMESPACE => your commands namespace
+ */
+Config::add('src/Aven/Console/conf.php');
+/**
+ * get instance
+ */
+$app = new Conso\App(new Input, new Output);
+
+
+// start application
+$app->run();
+
 
 // composer autoloader
 // if your routes file includes this file 
 // no need to include it again
 // if you change this file location make sure 
 // to update these links
-require '../autoload.php';
+/*require '../autoload.php';
 
 // replace this file with your routes file
 require '../../routes/web.php';
 
 
-/* ----------------------------------- */
-$start_memory   = memory_get_usage();
-$time_start     = microtime(true);
 
 $cli = new Aven\Cli; // initiate application
-$cli->run();        // start application
-
-$time_end       = microtime(true);
-$used           = memory_get_usage() - $start_memory;
-
-// time and memory info
-$cli->writeLn("\033[0;33mTime: " . round(($time_end - $time_start)  * 1000) . " ms, Memory : ". 
-    convert($used) ."\033[0m \n\n");
-
-
-function convert($size)
-{
-    $unit=array('B','KB','MB','GB','TB','PB');
-    return @round($size/pow(1024,($i=floor(log($size,1024)))),2).' '.$unit[$i];
-}
+$cli->run();        // start application*/
