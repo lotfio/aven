@@ -78,9 +78,10 @@ class Resolver implements ResolverInterface
     {
         switch (gettype($data)) { 
 
-        case 'array':  echo json_encode($data); 
-            break;
-        case 'object': echo json_encode($data); 
+        case 'array':
+        case 'object':
+            header("Content-Type: application/json"); 
+            echo json_encode($data); 
             break;
         default: echo $data; 
             break;
@@ -111,9 +112,10 @@ class Resolver implements ResolverInterface
      */
     public function checkControllerAndMethod($controller, $action)
     {
-        if(!class_exists($controller)) { throw new NotFoundException("Controller $controller not found ! ", 404);
-        }    
-        if(!method_exists($controller, $action)) { throw new NotFoundException("Method $action not found ! ", 404);
-        }    
+        if(!class_exists($controller)) 
+            throw new NotFoundException("Controller $controller not found ! ", 404);
+    
+        if(!method_exists($controller, $action)) 
+            throw new NotFoundException("Method $action not found ! ", 404);
     }
 }

@@ -11,11 +11,13 @@
  * @copyright 2019 Lotfio Lakehal
  */
 
-require 'vendor/autoload.php';
-
 use Conso\Input;
 use Conso\Output;
 use Conso\Config;
+
+
+require 'vendor/autoload.php';
+require 'index.php';
 
 /**
  * load config
@@ -37,19 +39,3 @@ $app = new Conso\App(new Input, new Output);
 
 // start application
 $app->run();
-
-
-// composer autoloader
-// if your routes file includes this file 
-// no need to include it again
-// if you change this file location make sure 
-// to update these links
-/*require '../autoload.php';
-
-// replace this file with your routes file
-require '../../routes/web.php';
-
-
-
-$cli = new Aven\Cli; // initiate application
-$cli->run();        // start application*/

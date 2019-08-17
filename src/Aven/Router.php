@@ -96,8 +96,15 @@ class Router
     public $config = [
 
         "namespace" => "",
-        "cache"     => "",
+        "cache"     => __DIR__,
     ];
+
+    /**
+     * cache file
+     *
+     * @var string
+     */
+    public $cacheFile = "routes.cache";
 
     /**
      * constructor
@@ -141,7 +148,7 @@ class Router
         /**
          * dispatch the routes if not from cache
          */
-        if(!$this->fromCache('routes.cache')) {    
+        if(!$this->fromCache($this->cacheFile)) {    
             $this->routes[] = $this->dispatcher->dispatch($method, $params);
             /**
              * each method call is going to increment to the filters array 
@@ -162,7 +169,7 @@ class Router
     public function init() // initiate routing table cal route 
     {
         if(php_sapi_name() !== 'cli') {
-            if(!$this->fromCache('routes.cache')) {          
+            if(!$this->fromCache($this->cacheFile)) {          
                 $this->filter->matchFilters($this->routes); // match filters with routes 
 
                 $this->sortRoutes(); // sort routes 
@@ -171,7 +178,7 @@ class Router
 
             }else{
                 
-                $this->table = $this->matcher->match($this->fromCache('routes.cache'));
+                $this->table = $this->matcher->match($this->fromCache($this->cacheFile));
             }
 
              // match routes with uri 
@@ -246,12 +253,12 @@ class Router
      * @param  string $filename filename
      * @return array|bool
      */
-    public function fromCache($filename)
+    public function fromCache()
     {
-        $file = rtrim($this->config['cache'], '/') .'/' . $filename;
+        $file = rtrim($this->config['cache'], DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $this->cacheFile;
 
         if(file_exists($file)) {   
-            return json_decode(file_get_contents($file));
+            return require $file;
         }
 
         return false;
