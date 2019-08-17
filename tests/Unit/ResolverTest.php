@@ -31,7 +31,7 @@ class ResolverTest extends TestCase
     /*
      * setting up resolver
      */
-    public function setUp()
+    public function setUp() : void
     {
         $this->resolver = new \Aven\Resolver;
 
