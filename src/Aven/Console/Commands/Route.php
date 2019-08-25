@@ -141,7 +141,6 @@ class Route extends Command implements CommandInterface
      */
     public function listRoutes()
     {
-
         $tbl = new \Console_Table();
 
         $tbl->setHeaders(array('ID','METHOD', 'URI', 'PARAMETERS', 'FILTERS', 'ACTION'));
@@ -150,7 +149,7 @@ class Route extends Command implements CommandInterface
         $this->routes = Aven::fromCache($this->cacheFile) ? Aven::fromCache($this->cacheFile) : Aven::getRoutes();
         sort($this->routes);
 
-        if(count($this->routes) < 1)
+        if(count($this->routes) == 0)
             throw new RunTimeException("No routes were found !");
 
         foreach ($this->routes as $route) {
@@ -162,13 +161,14 @@ class Route extends Command implements CommandInterface
             }          
 
 
-            $uri = preg_replace('/\P<.*?\>+/', NULL, $route->pattern);
-            $uri = preg_replace('/[^a-zA-Z\/]/', NULL, $uri);
-            $uri = (!empty($uri)) ? "/" . trim($uri, "/") : "/";
+            $uri    = preg_replace('/\P<.*?\>+/', NULL, $route->pattern);
+            $uri    = preg_replace('/[^a-zA-Z\/]/', NULL, $uri);
+            $uri    = (!empty($uri)) ? "/" . trim($uri, "/") : "/";
+            $action = ($route->action instanceof \Closure) ? 'Closure': $route->action; 
 
             $filter  = (isset($route->filters) && !empty($route->filters)) ? implode(',', (array) $route->filters) : '';
 
-            $tbl->addRow([$id,$route->method, $uri, $param, $filter, $route->action]);
+            $tbl->addRow([$id,$route->method, $uri, $param, $filter, $action]);
             $id++;
         }
 

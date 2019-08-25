@@ -1,4 +1,4 @@
-#!/usr/bin/php
+#!/usr/bin/env php
 <?php declare(strict_types=1);
 
 /**
@@ -17,7 +17,9 @@ use Conso\Config;
 
 
 require 'vendor/autoload.php';
-require 'index.php';
+
+if(file_exists(__DIR__.'/index.php')) // should be replaced with routes file
+    require __DIR__.'/index.php';
 
 /**
  * load config
@@ -30,7 +32,7 @@ Config::load();
  * COMMANDS  => your commands dir
  * NAMESPACE => your commands namespace
  */
-Config::add('src/Aven/Console/conf.php');
+Config::add(__DIR__.'/src/Aven/Console/conf.php');
 /**
  * get instance
  */
