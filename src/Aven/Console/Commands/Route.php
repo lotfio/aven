@@ -180,5 +180,16 @@ class Route extends Command implements CommandInterface
      * 	
      * @return string
      */
-    public function help() { return "Route command help.";}
+    public function help() {
+        $this->output->writeLn("\n [ route ] \n\n", 'yellow');
+        $this->output->writeLn("   route command to cache, clear cache, and list routes.\n\n");
+        $this->output->writeLn("  sub commands : \n\n", 'yellow');
+        $this->output->writeLn("    list       : list aven routes.\n");
+        $this->output->writeLn("    cache      : cache aven routes and load from cache.\n");
+        $this->output->writeLn("    clear      : clear routes cache file and load from routes file.\n\n");
+        $this->output->writeLn("  options : \n\n", 'yellow');
+        $this->output->writeLn("    no options for this command.\n\n");
+
+         return '';
+    }
 }
