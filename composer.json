@@ -9,8 +9,7 @@
         }
     ],
     "require": {
-
-        "php"                : ">=7.0.0",
+        "php"                : ">=7.2.0",
         "lotfio/conso"       : ">=0.1.0",
         "pear/console_table" : "^1.3"
     },
