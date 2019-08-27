@@ -96,9 +96,11 @@ class Route extends Command implements CommandInterface
         $this->cacheLocation();
 
         $file = $dir = rtrim(Aven::getConfig('cache'), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $this->cacheFile;
+        
+        if(file_exists($file))
+            throw new RunTimeException("cache file already exists ! please clear cache file and cache again.");
 
         foreach (Aven::getRoutes() as $route) { // dont cache closures
-
             if($route->action instanceof \Closure)
                 throw new RunTimeException("Can not cache Closures ! use controller methods instead.");
         }
