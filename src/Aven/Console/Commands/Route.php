@@ -7,7 +7,7 @@
  * @license   MIT
  * @category  CLI
  * @copyright 2019 Lotfio Lakehal
- * 
+ *
  * @time      Generated at 25-07-2019 by conso
  */
 
@@ -20,7 +20,7 @@ class Route extends Command implements CommandInterface
 {
     /**
      * command flags
-     * 
+     *
      * @var array
      */
     protected $flags = [];
@@ -40,14 +40,14 @@ class Route extends Command implements CommandInterface
     protected $routes;
     /**
      * command description method
-     * 	
+     *
      * @return string
      */
     protected $description = "Aven route command to cache, clear cache, and list routes.";
 
     /**
      * command execute method
-     * 
+     *
      * @param  string $sub
      * @param  array  $options
      * @param  array  $flags
@@ -69,7 +69,7 @@ class Route extends Command implements CommandInterface
 
     /**
      * check for cache location
-     * 
+     *
      * @return string
      */
     public function cacheLocation()
@@ -78,7 +78,7 @@ class Route extends Command implements CommandInterface
 
         if(!is_dir($dir))
             throw new RunTimeException(" cache location $dir is not a directory");
-            
+
         if(!is_writable($dir))
             throw new RunTimeException("You don't have permissions to cahche routes on this directory $dir !");
 
@@ -87,7 +87,7 @@ class Route extends Command implements CommandInterface
 
     /**
      * cache routes
-     * 
+     *
      * @return void
      */
     public function cacheRoutes()
@@ -98,16 +98,17 @@ class Route extends Command implements CommandInterface
         $file = $dir = rtrim(Aven::getConfig('cache'), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $this->cacheFile;
 
         foreach (Aven::getRoutes() as $route) { // dont cache closures
-                
+
             if($route->action instanceof \Closure)
                 throw new RunTimeException("Can not cache Closures ! use controller methods instead.");
         }
 
 
         $routes = "<?php return " . var_export(Aven::getRoutes(), true) . ";";
+        $routes = str_replace("stdClass::__set_state", "(object) ", $routes); // for older php versions <= 7.2
         $file   = fopen($file, "w+");
-
         fwrite($file, $routes);
+        fclose($file);
 
         $this->output->writeLn("\n ");
         $this->output->timer();
@@ -126,9 +127,9 @@ class Route extends Command implements CommandInterface
 
         $file = $dir . DIRECTORY_SEPARATOR . $this->cacheFile;
 
-        if(!is_file($file)) 
+        if(!is_file($file))
             throw new RunTimeException("No cache file was found $file ! please make sure that you have cached your routes !");
-        
+
         unlink($file); // delete file
 
         $this->output->writeLn("\n cache cleared successfully !\n");
@@ -158,13 +159,13 @@ class Route extends Command implements CommandInterface
             if(preg_match_all("/\<.*?\>+/", $route->pattern, $matches)) {
                 $param = str_replace('<', '', implode(",", $matches[0]));
                 $param = str_replace('>', '', $param);
-            }          
+            }
 
 
-            $uri    = preg_replace('/\P<.*?\>+/', NULL, $route->pattern);
+            $uri    = preg_replace('/\<.*?\>+/', NULL, $route->pattern);
             $uri    = preg_replace('/[^a-zA-Z\/]/', NULL, $uri);
             $uri    = (!empty($uri)) ? "/" . trim($uri, "/") : "/";
-            $action = ($route->action instanceof \Closure) ? 'Closure': $route->action; 
+            $action = ($route->action instanceof \Closure) ? 'Closure': $route->action;
 
             $filter  = (isset($route->filters) && !empty($route->filters)) ? implode(',', (array) $route->filters) : '';
 
@@ -177,7 +178,7 @@ class Route extends Command implements CommandInterface
 
     /**
      * command help method
-     * 	
+     *
      * @return string
      */
     public function help() {
