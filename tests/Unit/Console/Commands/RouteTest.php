@@ -1,9 +1,9 @@
-<?php 
+<?php
 
 namespace Tests\Unit\Console\Commands;
 
 /**
- * Aven          Robust PHP Router 
+ * Aven          Robust PHP Router
  *
  * @package      Aven
  * @author       Lotfio Lakehal <lotfiolakehal@gmail.com>
@@ -14,36 +14,35 @@ namespace Tests\Unit\Console\Commands;
  */
 
 use PHPUnit\Framework\TestCase;
+use Aven\Console\Commands\Route;
+use Conso\Input;
+use Conso\Output;
+use Conso\Config;
 
 class RouteTest extends TestCase
 {
-
-}
-
-/*
-class CliTest extends TestCase
-{
-    private $cli;
+    private $routeCommand;
 
     /**
-     * 
      *
-    public function setUp()
+     */
+    public function setUp() : void
     {
-        $this->cli = new \Aven\Cli;
+        Config::load();
+        $this->routeCommand = new Route(new Input, new Output);
     }
 
     /**
      * test set command is creating an array of commands
-     * 
-     * @return void
      *
-    public function testsetCliCommandsIsSteeingCommands()
+     * @return void
+     */
+    public function testCacheLocationIsReturningAvalidString()
     {
-        $this->assertInternalType('array', $this->cli->commands);
+        $this->assertTrue(is_dir($this->routeCommand->cacheLocation()));
     }
 
-    /**
+    /*
      * test write line method
      * @return void
      *
@@ -52,7 +51,7 @@ class CliTest extends TestCase
         $cli = $this->createMock(\Aven\Cli::class);
 
         $cli->method('writeLn')->will($this->returnArgument(0));
-        
+
         $this->expectOutputString('from console');
         echo $cli->writeLn('from console');
 
@@ -91,6 +90,6 @@ class CliTest extends TestCase
         $cli->method('noCommand')->willReturn($cli->writeLn(''));
 
         $this->assertEquals($cli->noCommand(), 'Command not found !');
-    }
+    }*/
 
-}*/
+}
