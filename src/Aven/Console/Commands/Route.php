@@ -1,4 +1,6 @@
-<?php namespace Aven\Console\Commands;
+<?php 
+
+namespace Aven\Console\Commands;
 
 /**
  * @author    <contact@lotfio.net>
