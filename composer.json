@@ -10,7 +10,6 @@
     ],
     "require": {
         "php"                : ">=7.2.0",
-        "lotfio/conso"       : "dev-develop",
         "pear/console_table" : "^1.3"
     },
 
