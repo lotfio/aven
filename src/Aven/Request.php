@@ -64,8 +64,8 @@ class Request
     public function isValidHttpMethod($method)
     {
         if ($this->method() === $method || $method === 'ANY') {
-            return true; // methods are okay
-        }
+            return true;
+        } // methods are okay
 
         if (isset($this->all()->_method) && strtoupper($this->all()->_method) === $method) {
             return true;

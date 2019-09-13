@@ -32,7 +32,7 @@ class FilterTest extends TestCase
         $filter->setFilters($filterExample);
         $filter->setFilters('');
 
-        $this->assertInternalType('array', $filter->filters);
+        $this->assertIsArray($filter->filters);
         $this->assertArrayHasKey('id', $filter->filters[0]);
     }
 
@@ -56,7 +56,7 @@ class FilterTest extends TestCase
         $filter->setFilters($filterExample);
         $filter->setFilters('');
 
-        $this->assertInternalType('array', $filter->filtersOrder);
+        $this->assertIsArray($filter->filtersOrder);
     }
 
     /**
@@ -108,7 +108,7 @@ class FilterTest extends TestCase
 
         $filter->orderFilters(); // order filters
 
-        $this->assertInternalType('array', $filter->getFilters());
+        $this->assertIsArray($filter->getFilters());
     }
 
     /**
@@ -163,7 +163,7 @@ class FilterTest extends TestCase
         $filter->matchFilters($routes);
 
         foreach ($routes as $route) {
-            $this->assertInternalType('array', $route->filters);
+            $this->assertIsArray($route->filters);
             $this->assertEquals($route->filters, $filterExample);
         }
     }

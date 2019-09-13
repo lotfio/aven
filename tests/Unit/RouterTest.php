@@ -24,7 +24,7 @@ class RouterTest extends TestCase
     /**
      * setting up router.
      */
-    public function setUp()
+    public function setUp() : void
     {
         $request = new Request();
         $dispatcher = new Dispatcher();
@@ -64,6 +64,6 @@ class RouterTest extends TestCase
      */
     public function testGetRoutesIsReturningAnArrayOfRoutes()
     {
-        $this->assertInternalType('array', $this->router->getRoutes());
+        $this->assertIsArray($this->router->getRoutes());
     }
 }

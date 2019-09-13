@@ -80,9 +80,10 @@ class Resolver implements ResolverInterface
     {
         switch (gettype($data)) {
 
-        case 'array':  echo json_encode($data);
-            break;
-        case 'object': echo json_encode($data);
+        case 'array':
+        case 'object':
+            header('Content-Type: application/json');
+            echo json_encode($data);
             break;
         default: echo $data;
             break;

@@ -20,7 +20,7 @@ class RequestTest extends TestCase
      */
     private $request;
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->request = new \Aven\Request();
     }
@@ -32,7 +32,7 @@ class RequestTest extends TestCase
      */
     public function testRequestAllReturnsObject()
     {
-        $this->assertInternalType('object', $this->request->all());
+        $this->assertIsObject($this->request->all());
     }
 
     /**
@@ -44,7 +44,7 @@ class RequestTest extends TestCase
     {
         $_SERVER['REQUEST_METHOD'] = 'GET';
 
-        $this->assertInternalType('string', $this->request->method());
+        $this->assertIsString($this->request->method());
     }
 
     /**
