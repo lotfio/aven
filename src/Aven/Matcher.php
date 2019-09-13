@@ -1,7 +1,9 @@
-<?php namespace Aven;
+<?php
 
-/**
- * Aven       Robust PHP Router 
+namespace Aven;
+
+/*
+ * Aven       Robust PHP Router
  *
  * @package   Aven
  * @author    Lotfio Lakehal <lotfiolakehal@gmail.com>
@@ -9,24 +11,21 @@
  * @license   MIT
  * @link      https://github.com/lotfio/aven
  */
-use Aven\Contracts\{
-    MatcherInterface,
-    FilterInterface
-};
-
+use Aven\Contracts\FilterInterface;
+use Aven\Contracts\MatcherInterface;
 
 class Matcher implements MatcherInterface
 {
     /**
-     * request
-     * 
+     * request.
+     *
      * @var object
      */
     public $request;
 
     /**
-     * filter 
-     * 
+     * filter.
+     *
      * @var object
      */
     public $filter;
@@ -34,34 +33,36 @@ class Matcher implements MatcherInterface
     /**
      * Matcher constructor.
      *
-     * @param Request $request
+     * @param Request         $request
      * @param FilterInterface $filter
      */
     public function __construct(Request $request, FilterInterface $filter)
     {
         $this->request = $request;
-        $this->filter  = $filter;
+        $this->filter = $filter;
     }
 
     /**
-     * route match method
+     * route match method.
      *
      * @param array $routes
-     * @return mixed
+     *
      * @throws Exception\NotFoundException
      * @throws \Exception
+     *
+     * @return mixed
      */
     public function match($routes) // match defined routes with requested uris and set up routing table
     {
-
         foreach ($routes as $route) {
-
-            if(preg_match($route->pattern, $this->request->uri(), $matches) && $this->request->isValidHttpMethod($route->method)) {
-
+            if (preg_match($route->pattern, $this->request->uri(), $matches) && $this->request->isValidHttpMethod($route->method)) {
                 foreach ($matches as $key => $value) {
-                    
-                    if($key === 0) { $route->uri = $value;}
-                    if(is_numeric($key)) { unset($matches[$key]);}
+                    if ($key === 0) {
+                        $route->uri = $value;
+                    }
+                    if (is_numeric($key)) {
+                        unset($matches[$key]);
+                    }
                 }
 
                 $route->params = $matches;

@@ -2,7 +2,7 @@
 
 namespace Tests\Unit\Console\Commands;
 
-/**
+/*
  * Aven          Robust PHP Router
  *
  * @package      Aven
@@ -13,27 +13,24 @@ namespace Tests\Unit\Console\Commands;
  *
  */
 
+use Aven\Console\Commands\Route;
 use Conso\Input;
 use Conso\Output;
 use OoFile\Conf;
 use PHPUnit\Framework\TestCase;
-use Aven\Console\Commands\Route;
 
 class RouteTest extends TestCase
 {
     private $routeCommand;
 
-    /**
-     *
-     */
     public function setUp() : void
     {
         Conf::add(dirname(__DIR__, 4).'/src/Aven/conf');
-        $this->routeCommand = new Route(new Input, new Output);
+        $this->routeCommand = new Route(new Input(), new Output());
     }
 
     /**
-     * test set command is creating an array of commands
+     * test set command is creating an array of commands.
      *
      * @return void
      */
@@ -42,8 +39,9 @@ class RouteTest extends TestCase
         $this->assertTrue(is_dir($this->routeCommand->cacheLocation()));
     }
 
-    /** 
-     *  test list routes method
+    /**
+     *  test list routes method.
+     *
      * @return void
      */
     public function testListRoutes()

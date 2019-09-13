@@ -1,7 +1,9 @@
-<?php namespace Aven;
+<?php
 
-/**
- * Aven       Robust PHP Router 
+namespace Aven;
+
+/*
+ * Aven       Robust PHP Router
  *
  * @package   Aven
  * @author    Lotfio Lakehal <lotfiolakehal@gmail.com>
@@ -10,20 +12,18 @@
  * @link      https://github.com/lotfio/aven
  */
 
+use Aven\Contracts\DispatcherInterface;
+use Aven\Contracts\FilterInterface;
+use Aven\Contracts\MatcherInterface;
+use Aven\Contracts\ResolverInterface;
 use Aven\Exception\NotFoundException;
-use Aven\Contracts\{
-    DispatcherInterface,
-    FilterInterface,
-    MatcherInterface,
-    ResolverInterface
-};
 
 class Router
 {
     /**
      * HTTP verbs
-     * Available router methods
-     * 
+     * Available router methods.
+     *
      * @var array routes
      */
     private $methods = [
@@ -45,79 +45,79 @@ class Router
     ];
 
     /**
-     * defined Routes
-     * 
+     * defined Routes.
+     *
      * @var array
      */
     private $routes = [];
 
     /**
-     * dispatcher object
-     * 
+     * dispatcher object.
+     *
      * @var Dispatcher
      */
     private $dispatcher;
 
     /**
-     * route filter
-     * 
+     * route filter.
+     *
      * @var array
      */
     public $filter;
 
     /**
-     * route filter
-     * 
+     * route filter.
+     *
      * @var array
      */
     public $matcher;
 
     /**
      * Routing Table
-     * Found route on call will be registered here 
-     * and called by the init method
-     * 
+     * Found route on call will be registered here
+     * and called by the init method.
+     *
      * @var array
      */
     private $table;
 
     /**
-     * route resolver
-     * 
+     * route resolver.
+     *
      * @var object
      */
     public $resolver;
 
     /**
-     * Router config
-     * 
+     * Router config.
+     *
      * @var array
      */
     public $config = [
 
-        "namespace" => "",
-        "cache"     => __DIR__,
+        'namespace' => '',
+        'cache'     => __DIR__,
     ];
 
     /**
-     * cache file
+     * cache file.
      *
      * @var string
      */
-    public $cacheFile = "routes.cache";
+    public $cacheFile = 'routes.cache';
 
     /**
-     * constructor
-     * 
-     * @param DispatcherInterface $dispatcher 
-     * @param FilterInterface     $filter     
-     * @param MatcherInterface    $matcher    
+     * constructor.
+     *
+     * @param DispatcherInterface $dispatcher
+     * @param FilterInterface     $filter
+     * @param MatcherInterface    $matcher
      * @param ResolverInterface   $resolver
      */
-    public function __construct(DispatcherInterface $dispatcher, FilterInterface $filter, 
+    public function __construct(DispatcherInterface $dispatcher, FilterInterface $filter,
         MatcherInterface $matcher, ResolverInterface $resolver
     ) {
-        // init dispatcher 
+        // init dispatcher
         $this->dispatcher = $dispatcher;
 
         $this->filter = $filter;
@@ -125,33 +125,35 @@ class Router
         $this->matcher = $matcher;
 
         $this->resolver = $resolver;
-
     }
 
     /**
-     * Router dynamic call to available HTTP Methods
+     * Router dynamic call to available HTTP Methods.
      *
      * @param  $method
      * @param  $params
-     * @return $this
+     *
      * @throws NotFoundException
+     *
+     * @return $this
      */
     public function __call($method, $params)
     {
         /**
-         * check if the route method is available
+         * check if the route method is available.
          */
         $method = strtoupper($method);
-        if(!in_array($method, $this->methods)) { throw new NotFoundException("Method $method Not Found !", 500);
+        if (!in_array($method, $this->methods)) {
+            throw new NotFoundException("Method $method Not Found !", 500);
         }
 
-        /**
+        /*
          * dispatch the routes if not from cache
          */
-        if(!$this->fromCache($this->cacheFile)) {    
+        if (!$this->fromCache($this->cacheFile)) {
             $this->routes[] = $this->dispatcher->dispatch($method, $params);
-            /**
-             * each method call is going to increment to the filters array 
+            /*
+             * each method call is going to increment to the filters array
              *  if there is a filter method called after that it s going to remove
              *  the previous empty value and replace it with the filter value
              */
@@ -162,35 +164,34 @@ class Router
     }
 
     /**
-     * Router initiate method
+     * Router initiate method.
      *
      * @throws \Exception
      */
-    public function init() // initiate routing table cal route 
+    public function init() // initiate routing table cal route
     {
-        if(php_sapi_name() !== 'cli') {
-            if(!$this->fromCache($this->cacheFile)) {          
-                $this->filter->matchFilters($this->routes); // match filters with routes 
+        if (php_sapi_name() !== 'cli') {
+            if (!$this->fromCache($this->cacheFile)) {
+                $this->filter->matchFilters($this->routes); // match filters with routes
 
-                $this->sortRoutes(); // sort routes 
+                $this->sortRoutes(); // sort routes
 
                 $this->table = $this->matcher->match($this->routes);
-
-            }else{
-                
+            } else {
                 $this->table = $this->matcher->match($this->fromCache($this->cacheFile));
             }
 
-             // match routes with uri 
+            // match routes with uri
             $namespace = isset($this->config['namespace']) ? $this->config['namespace'] : '';
+
             return $this->resolver->initiateRoute($this->table, $namespace); // initiate route
         }
     }
 
     /**
-     * sort routes method
-     * 
-     * @return void        
+     * sort routes method.
+     *
+     * @return void
      */
     public function sortRoutes()
     {
@@ -203,9 +204,10 @@ class Router
     }
 
     /**
-     * filter method
-     * 
-     * @param  array $filters parameters filters
+     * filter method.
+     *
+     * @param array $filters parameters filters
+     *
      * @return void
      */
     public function filter($filters)
@@ -214,9 +216,10 @@ class Router
     }
 
     /**
-     * router config method
-     * 
+     * router config method.
+     *
      * @param  $array config array
+     *
      * @return void
      */
     public function config($array)
@@ -225,10 +228,11 @@ class Router
     }
 
     /**
-     * get config method
-     * 
-     * @param  string $key 
-     * @return mixed     
+     * get config method.
+     *
+     * @param string $key
+     *
+     * @return mixed
      */
     public function getConfig($key)
     {
@@ -236,28 +240,30 @@ class Router
     }
 
     /**
-     * get Routes method
-     * 
+     * get Routes method.
+     *
      * @return array
      */
     public function getRoutes()
     {
         $this->filter->matchFilters($this->routes); // match filters nedded for cli
         $this->sortRoutes($this->routes);
+
         return $this->routes; // return array of routes
     }
 
     /**
      * load routes from cache !
-     * 
-     * @param  string $filename filename
+     *
+     * @param string $filename filename
+     *
      * @return array|bool
      */
     public function fromCache()
     {
-        $file = rtrim($this->config['cache'], DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $this->cacheFile;
+        $file = rtrim($this->config['cache'], DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.$this->cacheFile;
 
-        if(file_exists($file)) {   
+        if (file_exists($file)) {
             return require $file;
         }
 
