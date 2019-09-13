@@ -1,6 +1,6 @@
 {
     "name": "lotfio/aven",
-    "description": "Aven is a robust and flexible PHP Router with more than 14 HTTP verbs.",
+    "description": "Robust PHP router",
     "license": "MIT",
     "authors": [
         {

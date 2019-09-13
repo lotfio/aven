@@ -12,10 +12,7 @@
         <img src="https://img.shields.io/badge/PHP-7-3498db.svg" alt="PHP 7" title="PHP 7">
     </a>    
     <a href="#">
-        <img src="https://img.shields.io/badge/version-0.2.1-27ae60.svg" alt="version" title="version">
-    </a>
-    <a href="#">
-        <img src="https://img.shields.io/badge/build-passing-e91e63.svg" alt="build" title="build">
+        <img src="https://img.shields.io/badge/version-0.3.0-27ae60.svg" alt="version" title="version">
     </a>
     <a href="#">
         <img src="https://img.shields.io/badge/coverage-50%25-95a5a6.svg" alt="coverage" title="coverage">
@@ -23,30 +20,39 @@
     <a href="#">
         <img src="https://img.shields.io/badge/downloads-1k-ff5722.svg" alt="downloads" title="downloads">
     </a>
+ <a href="#">
+        <img src="https://img.shields.io/badge/build-passing-e91e63.svg" alt="build" title="build">
+    </a>
+<p align="center">
+    <strong>:tractor: Robust PHP router :tractor:</strong>
+  </p>
 </p>
 
-## Introduction :
-<b>Aven</b> (ayven) is a robust and <b>flexible</b> PHP router For PHP7 and newer versions.
+### :fire: Introduction :
+ <b>Aven</b> (ayven) is a robust and <b>flexible</b> PHP router For PHP7 and newer versions.
 
-## Features : 
-  * Flexibility (Route calling as a `Facade` or as an `Object`).
-  * More than 14 `HTTP VERBS` `GET`,`POST`,`PUT`,`PATCH`,`DELETE`,`OPTION`,`PURGE`,`HEAD`,`COPY`
-  * Name it what ever you want `Aven`,`MyRouter`,`Banana`,`DonaldTrump`.
-  * Regular Expressions Filters `filter()`.
-  * `Aven` CLI (Command Line Tool).
-  * Routes Listing.
-  * Routes caching to speed up your application on production.
-  * callback call, controller method call, static method call.
-  * Rerun data formating (arrays and objects are encoded to json by default).
+### :ok_hand: Features :
+* Flexibility (Route calling as a `Facade` or as an `Object`).
+* More than 14 `HTTP VERBS` `GET`,`POST`,`PUT`,`PATCH`,`DELETE`,`OPTION`,`PURGE`,`HEAD`,`COPY`
+* Name it what ever you want `Aven`,`MyRouter`,`Banana`,`DonaldTrump`.
+* Regular Expressions Filters `filter()`.
+* `Aven` CLI (Command Line Tool).
+* Routes Listing.
+* Routes caching to speed up your application on production.
+* callback call, controller method call, static method call.
+* Rerun data formating (arrays and objects are encoded to json by default).
 
-## Install it :
+### :pushpin: Requirements :
+- PHP 7.2 or newer versions
+- PHPUnit >= 8 (for testing purpose)
 
+### :rocket: Installation & Use :
 ```php
-  composer require lotfio/aven
+    composer require lotfio/aven
 ```
 
-## Configure your web server :
-You should redirect all requests to a front page `index.php`for example
+### :wrench: Configuration:
+ You should redirect all requests to a front page `index.php`for example.
 
 **APACHE :**
 
@@ -73,18 +79,16 @@ You should redirect all requests to a front page `index.php`for example
     }
 ```
 
-## use it :
-
+### :pencil2: Usage :
 **1- Quick use :** use `Aven Facade`
 
   - With a callback :
 
 ```php
  <?php
-  // autoload composer
-    require_once 'vendor/autoload.php';
-  
     use Aven\Facades\Aven;
+    // autoload composer
+    require_once 'vendor/autoload.php';
    
     // get with a callback
     Aven::get("/", function(){  
@@ -182,6 +186,7 @@ You can attach a `filter()` method to your routes
 ```php
 use Aven\Facades\Facade as MyRouter;
 ```
+
 ## Aven Console (CLI) :
 
 Aven CLI is a small tool aims to help you during development:
@@ -255,12 +260,19 @@ By default `Aven` doesn't allow `Closure` caching which is the default behavoir 
   Aven::form();
 ```
 
+### :computer: Contributing
 
-## Contributing
+- Thank you for considering to contribute to ***Package***. All the contribution guidelines are mentioned [here](CONTRIBUTING.md).
 
-Thank you for considering to contribute to Aven. All the contribution guidelines are mentioned [here](CONTRIBUTING.md).
+### :page_with_curl: ChangeLog
 
+- Here you can find the [ChangeLog](CHANGELOG.md).
 
-## License
+### :beer: Support the development
 
-Aven is an open-source software licensed under the [MIT license](https://github.com/lotfio/aven/blob/master/LICENSE).
+- Share ***Package*** and lets get more stars and more contributors.
+- If this project helped you reduce time to develop, you can give me a cup of coffee :) : **[Paypal](https://www.paypal.me/lotfio)**. 💖
+
+### :clipboard: License
+
+- ***Package*** is an open-source software licensed under the [MIT license](LICENSE).
