@@ -5,41 +5,21 @@
  *
  * @author    <contact@lotfio.net>
  * @package   Conso PHP Console Creator
- * @version   0.1.0
+ * @version   0.2.0
  * @license   MIT
  * @category  CLI
  * @copyright 2019 Lotfio Lakehal
  */
 
+use OoFile\Conf;
 use Conso\Input;
 use Conso\Output;
-use Conso\Config;
 
 require 'vendor/autoload.php';
 
-if(strstr(__DIR__, "vendor")) // if vendor package
-{
-    $file = explode("vendor", __DIR__)[0] . 'index.php'; // normally here we need a config file like yaml from projecy dir where we set our config
+//if(file_exists($file)) require $file; // should be replaced with routes file
 
-}else{
-
-    $file = __DIR__.'/index.php'; // if normal package
-}
-
-if(file_exists($file)) require $file; // should be replaced with routes file
-
-/**
- * load config
- */
-Config::load();
-
-/**
- * adding custom config
- * example:
- * COMMANDS  => your commands dir
- * NAMESPACE => your commands namespace
- */
-Config::add(__DIR__.'/src/Aven/Console/conf.php');
+Conf::add('./src/Aven/conf');
 /**
  * get instance
  */

@@ -13,11 +13,11 @@ namespace Tests\Unit\Console\Commands;
  *
  */
 
-use PHPUnit\Framework\TestCase;
-use Aven\Console\Commands\Route;
 use Conso\Input;
 use Conso\Output;
-use Conso\Config;
+use OoFile\Conf;
+use PHPUnit\Framework\TestCase;
+use Aven\Console\Commands\Route;
 
 class RouteTest extends TestCase
 {
@@ -28,7 +28,7 @@ class RouteTest extends TestCase
      */
     public function setUp() : void
     {
-        Config::load();
+        Conf::add(dirname(__DIR__, 4).'/src/Aven/conf');
         $this->routeCommand = new Route(new Input, new Output);
     }
 
@@ -42,54 +42,13 @@ class RouteTest extends TestCase
         $this->assertTrue(is_dir($this->routeCommand->cacheLocation()));
     }
 
-    /*
-     * test write line method
+    /** 
+     *  test list routes method
      * @return void
-     *
-    public function testWriteLineMethod()
+     */
+    public function testListRoutes()
     {
-        $cli = $this->createMock(\Aven\Cli::class);
-
-        $cli->method('writeLn')->will($this->returnArgument(0));
-
-        $this->expectOutputString('from console');
-        echo $cli->writeLn('from console');
-
+        $this->expectException(\Conso\Exceptions\RunTimeException::class);
+        $this->routeCommand->listRoutes();
     }
-
-    /**
-     *  test wants
-     * @return void
-     *
-    public function testWanstIsCallinTheRightMethod()
-    {
-        $cli = $this->createMock(\Aven\Cli::class);
-
-        $cli->method('cache')->willReturn('cache');
-        $cli->method('clearCache')->willReturn('clearcache');
-        $cli->method('listRoutes')->willReturn('listroutes');
-        $cli->method('noCommand')->willReturn('nocommand');
-
-        $cli->method('wants')->will($this->returnArgument(0));
-
-        $this->assertEquals($cli->wants('cache'), $cli->cache());
-        $this->assertEquals($cli->wants('clearcache'), $cli->clearCache());
-        $this->assertEquals($cli->wants('listroutes'), $cli->listRoutes());
-        $this->assertEquals($cli->wants('nocommand'), $cli->noCommand());
-    }
-
-    /**
-     * test no command
-     * @return void
-     *
-    public function testNoCommandMethod()
-    {
-        $cli = $this->createMock(\Aven\Cli::class);
-
-        $cli->method('writeLn')->willReturn('Command not found !');
-        $cli->method('noCommand')->willReturn($cli->writeLn(''));
-
-        $this->assertEquals($cli->noCommand(), 'Command not found !');
-    }*/
-
 }

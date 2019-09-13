@@ -114,9 +114,6 @@ class Route extends Command implements CommandInterface
         fwrite($file, $routes);
         fclose($file);
 
-        $this->output->writeLn("\n ");
-        $this->output->timer();
-        $this->output->writeLn("\n");
         $this->output->writeLn("\n Routes cached successfully to $dir directory !\n");
     }
 
