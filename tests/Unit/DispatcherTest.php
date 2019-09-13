@@ -1,45 +1,45 @@
 <?php
 
 /**
- * Aven          Robust PHP Router 
+ * Aven          Robust PHP Router.
  *
- * @package      Aven
  * @author       Lotfio Lakehal <lotfiolakehal@gmail.com>
  * @copyright    2016 Lotfio Lakehal
  * @license      MIT
- * @link         https://github.com/lotfio/aven
  *
+ * @link         https://github.com/lotfio/aven
  */
-
 use PHPUnit\Framework\TestCase;
 
 class DispatcherTest extends TestCase
 {
-
     /**
      * @throws \Aven\NotFoundException
+     *
      * @return void
      */
     public function testDispatchRoutesThrowInvalidArgumentException()
     {
-        $dispatcher = new \Aven\Dispatcher;
+        $dispatcher = new \Aven\Dispatcher();
 
         $this->expectException(InvalidArgumentException::class);
-        $dispatcher->dispatch('',[]);   
+        $dispatcher->dispatch('', []);
     }
 
     /**
      * @throws \Aven\NotFoundException
+     *
      * @return void
      */
     public function testDispatchRoutesIsReturningValidObject()
     {
-        $dispatcher = new \Aven\Dispatcher;
+        $dispatcher = new \Aven\Dispatcher();
 
-        $route = $dispatcher->dispatch('get', array(
-            "index/action/{id}",
-            function(){}
-        ));
+        $route = $dispatcher->dispatch('get', [
+            'index/action/{id}',
+            function () {
+            },
+        ]);
 
         $this->assertInstanceOf(\stdClass::class, $route);
     }

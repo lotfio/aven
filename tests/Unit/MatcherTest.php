@@ -1,44 +1,40 @@
 <?php
 
 /**
- * Aven          Robust PHP Router 
+ * Aven          Robust PHP Router.
  *
- * @package      Aven
  * @author       Lotfio Lakehal <lotfiolakehal@gmail.com>
  * @copyright    2016 Lotfio Lakehal
  * @license      MIT
- * @link         https://github.com/lotfio/aven
  *
+ * @link         https://github.com/lotfio/aven
  */
-
-use PHPUnit\Framework\TestCase;
-use Aven\Request;
 use Aven\Filter;
-
+use Aven\Request;
+use PHPUnit\Framework\TestCase;
 
 class MatcherTest extends TestCase
 {
-
     public function testMatchRouteIsmatching()
     {
-        $request  = $this->createMock(Request::class);
-        $filter   = $this->createMock(Filter::class);
+        $request = $this->createMock(Request::class);
+        $filter = $this->createMock(Filter::class);
 
         $matcher = new \Aven\Matcher($request, $filter);
-        
+
         $filter->method('filterRegEx')->will($this->returnValue(true));
-        
+
         $request->expects($this->any())->method('uri')->willReturn('aven');
 
         $request->expects($this->any())->method('isValidHttpMethod')->willReturn(true);
 
         $routes = [(object) [
 
-        "pattern" => "#^aven$#",
-        "method"  => "GET",
-        "action"  => "IndexController@index",
-        "params"  => [],
-        "filters" => 0 
+        'pattern' => '#^aven$#',
+        'method'  => 'GET',
+        'action'  => 'IndexController@index',
+        'params'  => [],
+        'filters' => 0,
 
         ]];
 
@@ -47,13 +43,13 @@ class MatcherTest extends TestCase
 
     public function testMatchRouteIsNotMAtching()
     {
-        $request  = $this->createMock(Request::class);
-        $filter   = $this->createMock(Filter::class);
+        $request = $this->createMock(Request::class);
+        $filter = $this->createMock(Filter::class);
 
         $matcher = new \Aven\Matcher($request, $filter);
-        
+
         $filter->method('filterRegEx')->will($this->returnValue(true));
-        
+
         $request->expects($this->any())->method('uri')->willReturn('aven');
 
         $request->expects($this->any())->method('isValidHttpMethod')->willReturn(true);
@@ -61,18 +57,17 @@ class MatcherTest extends TestCase
         $request->expects($this->any())->method('notFoundRoute')
         ->will($this->throwException(new \Exception('not found route !')));
 
-
         $routes = [(object) [
 
-        "pattern" => "#^$#",
-        "method"  => "GET",
-        "action"  => "IndexController@index",
-        "params"  => [],
-        "filters" => 0 
+        'pattern' => '#^$#',
+        'method'  => 'GET',
+        'action'  => 'IndexController@index',
+        'params'  => [],
+        'filters' => 0,
 
         ]];
 
         $this->expectException(Exception::class);
-        $matcher->match($routes); 
+        $matcher->match($routes);
     }
 }
