@@ -79,7 +79,7 @@ class Route extends Command implements CommandInterface
         $dir = rtrim(Aven::getConfig('cache'), '/');
 
         if (!is_dir($dir)) {
-            throw new RunTimeException(" cache location $dir is not a directory");
+            throw new RunTimeException(" Cache location $dir is not a directory");
         }
         if (!is_writable($dir)) {
             throw new RunTimeException("You don't have permissions to cahche routes on this directory $dir !");
@@ -101,7 +101,7 @@ class Route extends Command implements CommandInterface
         $file = $dir = rtrim(Aven::getConfig('cache'), DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.$this->cacheFile;
 
         if (file_exists($file)) {
-            throw new RunTimeException('cache file already exists ! please clear cache file and cache again.');
+            throw new RunTimeException('Cache file already exists ! please clear cache file and cache again.');
         }
         foreach (Aven::getRoutes() as $route) { // dont cache closures
             if ($route->action instanceof \Closure) {
@@ -115,7 +115,7 @@ class Route extends Command implements CommandInterface
         fwrite($file, $routes);
         fclose($file);
 
-        $this->output->writeLn("\n Routes cached successfully to $dir directory !\n");
+        $this->output->writeLn("\n Routes cached successfully !\n");
     }
 
     /**
@@ -130,11 +130,11 @@ class Route extends Command implements CommandInterface
         $file = $dir.DIRECTORY_SEPARATOR.$this->cacheFile;
 
         if (!is_file($file)) {
-            throw new RunTimeException("No cache file was found $file ! please make sure that you have cached your routes !");
+            throw new RunTimeException("No routes were cached !");
         }
         unlink($file); // delete file
 
-        $this->output->writeLn("\n cache cleared successfully !\n");
+        $this->output->writeLn("\n Cache cleared successfully !\n");
     }
 
     /**
@@ -162,8 +162,9 @@ class Route extends Command implements CommandInterface
                 $param = str_replace('>', '', $param);
             }
 
-            $uri = preg_replace('/\<.*?\>+/', null, $route->pattern);
-            $uri = preg_replace('/[^a-zA-Z\/]/', null, $uri);
+            $uri = preg_replace('/(\(\?P\<(.*?)\>\.\*\))/', ":$2", $route->pattern);
+            $uri = preg_replace('/[#$^]/', NULL, $uri);
+
             $uri = (!empty($uri)) ? '/'.trim($uri, '/') : '/';
             $action = ($route->action instanceof \Closure) ? 'Closure' : $route->action;
 
