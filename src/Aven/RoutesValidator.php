@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Aven;
 
 use Aven\Exceptions\RoutesValidatorException;

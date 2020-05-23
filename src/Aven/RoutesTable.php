@@ -1,4 +1,6 @@
-<?php 
+<?php
+
+declare(strict_types=1);
 
 namespace Aven;
 
@@ -39,8 +41,14 @@ class RoutesTable implements RoutesTableInterface
      * @param string|null $groupName
      * @return self
      */
-    public function addRoute(string $method, string $uri, $action, ?string $group = NULL, ?string $groupName) : self
+    public function addRoute(string $method, string $uri, $action, ?string $group = NULL, ?string $groupName = NULL) : self
     {
+        if(!is_string($uri) || strpos($uri, '~') !== FALSE)
+            throw new RoutesTableException("route uri ($uri) must be a valid string and (~) character is not allowed.");
+
+        if(!$uri instanceof \Closure && !is_string($uri))
+            throw new RouterException("route action ($action) must be avalid string or a callback");
+
         $this->route['method'][]     = $method;
         $this->route['uri'][]        = $uri;
         $this->route['regex'][]      = NULL;
@@ -60,6 +68,9 @@ class RoutesTable implements RoutesTableInterface
      */
     public function regex(array $regexe) : self
     {
+        if(!is_array($regexe))
+            throw new RoutesTableException("route regex must be an array.");
+
         $this->route['regex'][count($this->route['regex']) - 1] = $regexe; // always get the last since it has been initialized by setup
         return $this;
     }
@@ -96,7 +107,7 @@ class RoutesTable implements RoutesTableInterface
                 "PARAMS_REGEX"  => isset($this->route['regex'][$i]) ? $this->route['regex'][$i] : [],
                 "ACTION"        => $this->route['action'][$i],
                 "NAME"          => trim($this->route['groupName'][$i] . $this->route['name'][$i], '.'),
-                "GROUP"         => '/' . trim($this->route['group'][$i], '/')
+                "GROUP"         => '/' . $this->route['group'][$i] ?? trim($this->route['group'][$i], '/')
             );
         }
     }

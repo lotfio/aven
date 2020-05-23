@@ -1,5 +1,7 @@
 <?php 
 
+declare(strict_types=1);
+
 namespace Aven;
 
 use Aven\Exceptions\RouterException;
@@ -72,18 +74,12 @@ class Router
 
 
     public function __call($method, $params)
-    {
-        if(!isset($params[0]) || !isset($params[1]))
-            throw new RouterException("route uri and action are required.");
-
-        if(!is_string($params[0]) || strpos($params[0], '~') !== FALSE)
-            throw new RouterException("route uri must be a valid string and (~) character is not allowed.");
-        
+    {   
         if(!in_array(strtoupper($method), $this->availMethods))
             throw new RouterException("request method ($method) not allowed.");
-        
-        if(!$params[1] instanceof \Closure && !is_string($params[1]))
-            throw new RouterException("route action must be avalid string or a callback");
+
+        if(!isset($params[0]) || !isset($params[1]))
+            throw new RouterException("route uri and action are required.");
         
         return $this->table->addRoute($method, $params[0], $params[1], $this->group, $this->groupName);
     }
