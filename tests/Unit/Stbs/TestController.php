@@ -18,4 +18,9 @@ class TestController
     {
         return array();
     }
+
+    public function testValid()
+    {
+        return 'valid route';
+    }
 }

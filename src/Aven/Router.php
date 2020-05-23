@@ -53,9 +53,14 @@ class Router
      * @var ?string
      */
     private  $group     = NULL;
+
     private  $groupName = NULL;
 
-
+    /**
+     * request uri
+     *
+     * @var string
+     */
     private $uri;
 
     /**
@@ -67,8 +72,6 @@ class Router
         $this->table     = new RoutesTable;
         $this->filter    = new RoutesFilter;
         $this->validator = new RoutesValidator;
-
-        // should be treated somewhere
         $this->uri = $uri;
     }
 
