@@ -32,23 +32,17 @@ trait RouterTrait
      * @param callable $callback
      * @return void
      */
-    public function form(string $uri, $callback, array $methods = [], string $name = NULL) : void
+    public function form(string $uri, $callback, array $customMethods = [], string $name = NULL) : void
     {
-        $this->group($uri, function($router) use ($callback, $methods){
+        $this->group($uri, function($router) use ($callback, $customMethods){
 
-            $post = $callback;
             $get  = $callback;
+            $post = $callback;
 
             if(is_string($callback))
             {
-                $get  = "$callback@showForm";
-                $post = "$callback@submitForm";
-
-                if(!empty($methods) && count($methods) > 1)
-                {
-                    $get   = "$callback@{$methods[0]}";
-                    $post  = "$callback@{$methods[1]}";
-                }
+                $get   = isset($customMethods[0]) ? "$callback@{$customMethods[0]}" : "$callback@showForm";
+                $post  = isset($customMethods[1]) ? "$callback@{$customMethods[1]}" : "$callback@submitForm";
             }
 
             $router->get('',  $get);

@@ -63,18 +63,13 @@ class Router
      */
     private $uri;
 
-    /**
-     *
-     * 
-     */
     public function __construct(string $uri)
     {
-        $this->table     = new RoutesTable;
-        $this->filter    = new RoutesFilter;
-        $this->validator = new RoutesValidator;
+        $this->table        = new RoutesTable;
+        $this->filter       = new RoutesFilter;
+        $this->validator    = new RoutesValidator;
         $this->uri = $uri;
     }
-
 
     public function __call($method, $params)
     {   
@@ -87,7 +82,6 @@ class Router
         return $this->table->addRoute($method, $params[0], $params[1], $this->group, $this->groupName);
     }
     
-
     public function init()
     {
         // should be initiated after the calls 
