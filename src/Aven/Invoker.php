@@ -21,7 +21,7 @@ class Invoker
         if($action instanceof \Closure)
             return $this->callback($action, $params);
 
-        if(preg_match('~\w+(@|::|->)\w+~', $action, $m))
+        if(preg_match('~\w+(@|::)\w+~', $action, $m))
         {
             $action = explode($m[1], $action);
             return $this->classMethod($action[0], $action[1], $params);
