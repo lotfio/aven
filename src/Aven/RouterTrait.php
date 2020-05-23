@@ -39,7 +39,7 @@ trait RouterTrait
 
             if(is_string($callback))
             {
-                $get  = "$callback@showFrom";
+                $get  = "$callback@showForm";
                 $post = "$callback@submitForm";
 
                 if(!empty($methods) && count($methods) > 1)
@@ -49,8 +49,8 @@ trait RouterTrait
                 }
             }
 
-            $router->get(NULL,  $get);
-            $router->post(NULL, $post);
+            $router->get('',  $get);
+            $router->post('', $post);
 
         }, $name);
     }

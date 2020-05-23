@@ -25,13 +25,6 @@ class Router
     private $table;
 
     /**
-     * available routes
-     *
-     * @var array
-     */
-    private $routes;
-
-    /**
      * routes filter object
      *
      * @var object
@@ -39,12 +32,26 @@ class Router
     private $filter; 
 
     /**
+     * routes validator
+     *
+     * @var object
+     */
+    private $validator; 
+
+    /**
+     * available routes
+     *
+     * @var array
+     */
+    private $routes;
+
+    /**
      * route group and name
      *
      * @var ?string
      */
-    public  $group     = NULL;
-    public $groupName = NULL;
+    private  $group     = NULL;
+    private  $groupName = NULL;
 
 
     private $uri;
@@ -55,8 +62,9 @@ class Router
      */
     public function __construct(string $uri)
     {
-        $this->table  = new RoutesTable;
-        $this->filter = new RoutesFilter;
+        $this->table     = new RoutesTable;
+        $this->filter    = new RoutesFilter;
+        $this->validator = new RoutesValidator;
 
         // should be treated somewhere
         $this->uri = $uri;
@@ -86,12 +94,13 @@ class Router
         // should be initiated after the calls 
         $this->table->init();
 
+        // set routes 
         $this->routes = $this->table->getRoutes();
 
         // should be filtered after initiated in table
         $this->filter->applyFilters($this->routes);
 
-
-        (new RoutesValidator)->isValidRoute($this->routes, $this->uri);
+        // validate and invoke vlalid route
+        $this->validator->isValidRoute($this->routes, $this->uri);
     }
 }
