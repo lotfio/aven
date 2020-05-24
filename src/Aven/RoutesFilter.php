@@ -32,9 +32,11 @@ class RoutesFilter
 
         foreach($routes as &$route)
         {
-            $uri  = '/' . trim($route['GROUP'] . $route['REGEX_URI'], '/'); // append group
-            $uri  = str_replace('//', '/', $uri);  // fix if duplicate forwardslashes
+            $uri  = $route['GROUP'] . $route['REGEX_URI']; // append group
+            $uri  = preg_replace('~\/+~', '/', $uri);  // fix if duplicate forwardslashes
             $uri  = str_replace('/', '\\/', $uri); // escape
+
+            $route['GROUP'] = preg_replace('~\/+~', '/', $route['GROUP']);
             
             // user defined regex (from regex method)
             if(is_array($route['PARAMS_REGEX']) && count($route['PARAMS_REGEX']) > 0)

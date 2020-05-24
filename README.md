@@ -31,17 +31,6 @@
 ### :fire: Introduction :
  <b>Aven</b> (ayven) is a robust and <b>flexible</b> PHP router For PHP7 and newer versions.
 
-### :ok_hand: Features :
-* Flexibility (Route calling as a `Facade` or as an `Object`).
-* More than 14 `HTTP VERBS` `GET`,`POST`,`PUT`,`PATCH`,`DELETE`,`OPTION`,`PURGE`,`HEAD`,`COPY`
-* Name it what ever you want `Aven`,`MyRouter`,`Banana`,`DonaldTrump`.
-* Regular Expressions Filters `filter()`.
-* `Aven` CLI (Command Line Tool).
-* Routes Listing.
-* Routes caching to speed up your application on production.
-* callback call, controller method call, static method call.
-* Rerun data formating (arrays and objects are encoded to json by default).
-
 ### :pushpin: Requirements :
 - PHP 7.2 or newer versions
 - PHPUnit >= 8 (for testing purpose)
@@ -51,213 +40,153 @@
     composer require lotfio/aven
 ```
 
-### :wrench: Configuration:
- You should redirect all requests to a front page `index.php`for example.
-
-**APACHE :**
-
-```php
-<IfModule mod_rewrite.c>
-    <IfModule mod_negotiation.c>
-        Options -MultiViews -Indexes
-    </IfModule>
-
-    RewriteEngine On
-
-    # Handle Front Controller...
-    RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteRule ^ index.php [L]
-</IfModule>
-```
-
-**NGINX :**
-
-```php
-    location / {
-        try_files $uri /$uri /index.php?$query_string;
-    }
-```
 
 ### :pencil2: Usage :
-**1- Quick use :** use `Aven Facade`
-
-  - With a callback :
+**1- Quick use :** 
 
 ```php
  <?php
-    use Aven\Facades\Aven;
-    // autoload composer
     require_once 'vendor/autoload.php';
-   
-    // get with a callback
-    Aven::get("/", function(){  
-        return "Hello from Aven this is base route";    
+
+    // here we are using $_SERVER['REQUEST_URI']
+    // you can use $_GET['uri']
+    $router = new Aven\Router($_SERVER['REQUEST_URI']);
+ 
+    $router->get('/', function(){  // with a callback 
+        return "welcome from aven";
     });
- 
-    Aven::init(); // initialize router 
+
+    $router->get('/', "UsersController@method"); // controller method
+    $router->get('/', "UsersController::method"); // controller static method
+
+
+    $router->init(); // initialize router 
 ```
-
-**Note :**
-
-Don't forget to `Aven::init()` initialize the router, if you are using the router in your custom framework you can move the `Aven::init()` statment to the Kernel to clean up your routes file.
-
-* With a controller method :
-
+**2- Available routes :** 
+* `GET`, `POST`, `ANY`, `PUT`, `DELETE`, `HEAD` 
 ```php
-    // get with a controller method
-    Aven::get("/index", "IndexController@indexMethod");
+ <?php
+
+    $router->get('/',  function(){ return " this is get method"; }); 
+    $router->post('/', function(){ return " this is post method"; });
+    $router->any('/',  function(){ return " this is any method allows all"; });
+
+    $router->put('/',    function(){ return " this is put method. you should send $_POST['_method'] = 'put'"; }); 
+    $router->delete('/', function(){ return " this is delete method. you should send $_POST['_method'] = 'delete'"; }); 
+    $router->head('/',   function(){ return " this is head method. you should send $_POST['_method'] = 'head'"; }); 
 ```
 
-* With a static controller method :
-
-```php   
-    // get with a controller static method
-    Aven::get("/index", "IndexController::indexMethod");
-```
-
-* If you use namespaces you can prepend the controller name or use `Aven::config` to set the base namespace :
- 
+**3- named routes :**
 ```php
-     // get with a controller method
-    Aven::get("/index", "YourNamespace\IndexController@indexMethod");
+ <?php
+    $router->get('/',  function(){ return " this is get method";})->name('default');
 ```
 
-* Or :
-
+**4- redirects :**
+* `$router->redirect(string $routeName, array $params = [], $httpcode = 301)`
 ```php
-    Aven::config([
-        "namespace" => "Your\\Namespace\\"
-   ]);
+ <?php
+    // route 1 
+    $router->get('/',  function() use($router){  // accessing this route will redirect you to route2 means /hola
+
+        $router->redirect('route2'); // if parametrised route you can pass array of parameters
+
+    })->name('default');
+
+    // route 2
+    $router->get('/hola',  function(){ return " welcome to hola from default route";})->name('route2');
 ```
 
-**Available `HTTP` verbs :**
-
-`GET`,`POST`,`PUT`,`PATCH`,`DELETE`,`COPY`, `HEAD`,`OPTIONS`,`LINK`,`UNLINK`,`PURGE`,
-`LOCK`,`UNLOCK`,`PROPFIND`,`ANY`
-
-**Note :**
-
-As HTML supports only the `GET` and `POST` from methods it is handy to append a hidden input to your form named `_method` to be able to use other `HTTP METHODS` and to surpass this limitation :
-
-```html
-  <form action="" method="POST">
-      <input type="hidden" name="_method" value="PUT">
-  </form>
-```
-
-
-**Route parameters :**
-
-```php  
-  Aven::get("/users/{id}", function($id){
-      echo " get users by id " . $id;
-  });
- 
-```
-  
-**Route parameters filters:**
-
-You can attach a `filter()` method to your routes
-
+**5- route parameters :**
+* you can use both parenthesis or curly braces for parameters 
+* predefind parameters:
+    - `:int`, `:integer`, `:num`, `:numeric`, `:number` = \d+
+    - `:str`   = \w+
+    - `:alpha` = [A-z]+
 ```php
- Aven::get("/users/{id}", function($id){
-      echo " get users by id " . $id;
-  })->filter(["id"=>"/[0-9]+/"]);
+ <?php
+
+    $router->get('/test/(:int)',  function() use($router){}); // evaluates to /test/\d+
+    $router->get('/test/(:str)',  function() use($router){}); // evaluates to /test/\w+
+
+    // optional parameters (if optional parameter uri should end with /)
+    $router->get('/test/(:id*)',  function() use($router){}); // optional id /test/ or /test/1
+    $router->get('/test/(:id?)',  function() use($router){}); // zero or one id /test/ or /test/0-9
+    
+
 ```
- 
+**6- custom route parameters :**
+* `->regex(array $params)`
+```php
+ <?php
+    // override predefined param
+    $router->get('/test/(:str)',  function() use($router){})->regex(array(":str"=> '[my-reg-ex]'));
 
-**2- Custom use :**
+    // custom param
+    $router->get('/test/(:hola)',  function() use($router){})->regex(array(":hola"=> '[my-reg-ex]'));
 
-* To customise the router name create a custom router class and extend the base Facade like this:
-
-```php 
+```
+**7- route groups :**
+* `$router->group(string $uri,callable $callback, ?string $groupName)`
+- you can have as many nested groups as you want
+```php
+ <?php
    
-   class MyRouter extends Aven\Facades\Facade{} // custom router class 
-    
-   MyRouter::get("/", function(){
-      return "Hello from my custom router";
+   $router->group('/mygroup', function($router){  // groups adds prefixes to routes
+
+        $router->get('/test',  function(){ return "from /mygroup/test" }); // evaluates to /mygroup/test
+
    });
-    
-```
 
-* Or You can simply give an alias to the base `Facade` :
+    // multiple groups
+    $router->group('/group1', function($router){  
 
-```php
-use Aven\Facades\Facade as MyRouter;
-```
+        $router->group('/group2', function($router){  
 
-## Aven Console (CLI) :
+            $router->get('/test',  function(){ return "from /group1/group2/test" }); // evaluates to /group1/group2/test
+        });
+   });
 
-Aven CLI is a small tool aims to help you during development:
-
-![aven](https://user-images.githubusercontent.com/18489496/39255419-61873344-48a4-11e8-9b88-a163d52b388a.gif)
-
-**configure Aven CLI**
-
-make sure to :
- - Include **composer autoload file** `vendor/autoload.php` in your `vendor/bin/aven` executable
- - And include your routes file in the same file.
- - You also can symlink ar copy `vendor/bin/aven` to your project root `.` or `/usr/local/bin` to make it globally executable.
-
-Your `vendo/bin/aven` should have these two lines:
-
-```php
-require '../autoload.php';
-require '../../routes/myRoutesFile.php'; // routes file
 
 ```
-
-**Available Commands :**
-
-Assume we have moved `vendor/bin/Aven` to `../../` our project location and we have added the routes and the autoload files.
-
-**1-routes :** this command will list all defined routes giving you the ability to debug and see your routing table : 
-
-![routes](https://user-images.githubusercontent.com/18489496/39255488-90e4e46a-48a4-11e8-9fd9-b0ea6ed26a49.gif)
-
-**2-Caching :**
-
-Cashing is very important to speed up any web application therefore `Aven` helps you to cache your routes and load from cache during production which increases your application speed. 
-By default `Aven` doesn't allow `Closure` caching which is the default behavoir of PHP However if you feel that you need to cache Closures **Which is not recomended** consider using [**SuperClusore**](https://github.com/jeremeamia/super_closure) package.
-
-**Setting up caching location :**
-
+**8- additionl routes :**
+* `$router->form(string $uri, $callback|$class, ?array $override, ?string $routeName)`
 ```php
- Aven::config([
-    "cache" => __DIR__ . "/cache"
-]);
+ <?php
+    // form route with callback
+    $router->form('/login', function(){  }); // works both with GET and POST
+
+    // form route with class
+    $router->form('/login', Login::class); // by default class should have showForm & submitForm
+
+    // override default form methods 
+    $router->form('/login', Login::class, ['get','post']);
+
+    // named form method 
+    $router->form('/login', Login::class, ['get','post'], 'login.form');
+
 ```
-
-**cache routes**
-
-![cache](https://user-images.githubusercontent.com/18489496/39255518-ab05210c-48a4-11e8-8342-9535a5a5bc18.gif)
-
-**clear cache**
-
-![clear](https://user-images.githubusercontent.com/18489496/39255583-cc00c1e0-48a4-11e8-8a91-91328740db97.gif)
-
-## Custom Error Pages
-  You can use your custom error pages by defining your custom `set_exception_handler` and translate error codes `$exception->getCode()` to views.
-
-  - `Aven` trhows a `NotFoundException` with `404` error code when no route has been matched or found.
-  - and it throws a `RegExMisMatchException` with `500` error code if a regular expression filter has not been matched.
-  
-
-## TODO 
-
-**Optional parameters support:**
-  
+**9- additionl routes :**
+* `$router->crud(string $uri, string $class, ?array $only, ?string $routeName)`
 ```php
-  Aven::get('/page/{id?}');
-```
+ <?php
+    // crud route
+    // this needs a User class with 4 methods create,read,update,delete
+    // create => POST user/create
+    // read   => GET with optional pareter user/read/
+    // update => PUT with optional pareter user/update/
+    // delete => DELETE with optional pareter user/delete/
+    $router->crud('/user', User::class);
 
-**Adding some useful methods like**
+    // disable some methods 
+    $router->crud('/user', User::class, ['c']); // only create
+    $router->crud('/user', User::class, ['create']); // only create
+    $router->crud('/user', User::class, ['c', 'u']); //  create & update
+    $router->crud('/user', User::class, ['create', 'update']); //  create & update
 
-```php
-  Aven::group();
-  Aven::namespace();
-  Aven::form();
+    // named crud
+    $router->crud('/user', User::class, NULL, 'myCrud'); //  name can be used for redirections
+
 ```
 
 ### :computer: Contributing
