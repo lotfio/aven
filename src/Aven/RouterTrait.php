@@ -32,7 +32,7 @@ trait RouterTrait
      * @param callable $callback
      * @return void
      */
-    public function form(string $uri, $callback, array $customMethods = [], string $name = NULL) : void
+    public function form(string $uri, $callback, array $customMethods = [], string $name = '') : void
     {
         $this->group($uri, function($router) use ($callback, $customMethods){
 
@@ -58,16 +58,42 @@ trait RouterTrait
      * @param callable $callback
      * @return void
      */
-    public function crud(string $uri, $controller, string $name = NULL) : self
+    public function crud(string $uri, $controller, ?array $only = NULL, string $name = '') : void
     {
-        $this->group($uri, function($router) use ($controller){
-            $router->post('/create',            "$controller@create")->name("create");
-            $router->get('/read/(:id*)',        "$controller@read")->name("read");
-            $router->put('/update/(:id)',       "$controller@update")->name("update");
-            $router->delete('/delete/(:id)',    "$controller@delete")->name("delete");
-        }, $name);
+        $allowed = ['c', 'r', 'u', 'd', 'create', 'read', 'update', 'delete'];
 
-        return $this;
+        if(is_array($only) && count($only) > 0)
+        {
+            foreach($only as $on)
+                if(!in_array($on, $allowed))
+                    Throw new RouterException("wrong crud only value ($on) allowed (c,r,u,d) or (create,read,update,delete) are allowed");
+        }
+
+        $this->group($uri, function($router) use ($controller, $only){
+
+            if(is_array($only))
+            {
+                if(in_array('c', $only) || in_array('create', $only))
+                    $router->post('/create',     "$controller@create")->name("create");
+
+                if(in_array('r', $only) || in_array('read', $only))
+                    $router->get('/read/(:id*)',        "$controller@read")->name("read");
+
+                if(in_array('u', $only) || in_array('update', $only))
+                    $router->put('/update/(:id)',       "$controller@update")->name("update");
+
+                if(in_array('d', $only) || in_array('delete', $only))
+                    $router->delete('/delete/(:id)',    "$controller@delete")->name("delete");
+                return;
+            }
+
+            $router->post('/create',        "$controller@create")->name("create");
+            $router->get('/read/(:id*)',    "$controller@read")->name("read");
+            $router->put('/update/(:id)',   "$controller@update")->name("update");
+            $router->delete('/delete/(:id)',"$controller@delete")->name("delete");
+
+
+        }, $name);
     }
 
     /**
