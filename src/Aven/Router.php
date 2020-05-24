@@ -16,7 +16,7 @@ class Router
      * @var array
      */
     private $availMethods = array(
-        'GET', 'POST', 'PUT', 'DELETE', 'ANY'
+        'GET', 'POST', 'PUT', 'DELETE', 'ANY', 'HEAD'
     );
 
     /**
@@ -48,12 +48,17 @@ class Router
     private $routes;
 
     /**
-     * route group and name
+     * route group
      *
      * @var ?string
      */
     private  $group     = NULL;
 
+    /**
+     * group name
+     *
+     * @var ?string
+     */
     private  $groupName = NULL;
 
     /**
@@ -63,6 +68,11 @@ class Router
      */
     private $uri;
 
+    /**
+     * set up
+     *
+     * @param string $uri
+     */
     public function __construct(string $uri)
     {
         $this->table        = new RoutesTable;
@@ -71,6 +81,13 @@ class Router
         $this->uri = $uri;
     }
 
+    /**
+     * dynamic method calls
+     *
+     * @param string $method
+     * @param array  $params
+     * @return void
+     */
     public function __call($method, $params)
     {   
         if(!in_array(strtoupper($method), $this->availMethods))
@@ -82,6 +99,11 @@ class Router
         return $this->table->addRoute($method, $params[0], $params[1], $this->group, $this->groupName);
     }
     
+    /**
+     * initialize router
+     *
+     * @return void
+     */
     public function init()
     {
         // should be initiated after the calls 
