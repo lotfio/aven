@@ -131,6 +131,4 @@ trait RouterTrait
 
         throw new RouterException("Error redirect route ($name) not found.", 50);
     }
-
-    //  implement crud only + except
 }

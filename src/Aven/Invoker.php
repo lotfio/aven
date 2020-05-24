@@ -6,8 +6,6 @@ namespace Aven;
 
 use Aven\Exceptions\InvokerException;
 
-// invokes a valid route action (either callback or class method)
-
 class Invoker
 {
     /**

@@ -6,11 +6,8 @@ namespace Aven;
 
 use Aven\Exceptions\RoutesValidatorException;
 
-// find a valid route with uri and http method and ask the invoker to invoke it 
-
 class RoutesValidator
 {
-
     /**
      * check valid route and invoke it
      *

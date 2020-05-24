@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Aven;
 
-// this class applies reg ex default and user defined to parameters 
 class RoutesFilter
 {
     /**
@@ -55,7 +54,6 @@ class RoutesFilter
             $route['REGEX_URI'] =  $uri; // ready
         }
     }
-
 
     /**
      * regex filter method
