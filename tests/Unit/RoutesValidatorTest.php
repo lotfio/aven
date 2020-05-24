@@ -44,4 +44,14 @@ class RoutesValidatorTest extends TestCase
         $this->validator->isValidRoute($this->routes, '/');
     }
 
+    /**
+     * test valid route
+     *
+     * @return void
+     */
+    public function testIsValidRouteValid()
+    {
+        $this->validator->isValidRoute($this->routes, '/test');
+        $this->expectOutputString('valid route');
+    }
 }

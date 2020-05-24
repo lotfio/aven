@@ -67,7 +67,7 @@ class RoutesFilter
      * @param string $subject
      * @return void
      */
-    public function replacePredefined(array $patterns, string $subject)
+    private function replacePredefined(array $patterns, string $subject)
     {
         foreach($patterns as $pattern => $rep)
         {
