@@ -16,10 +16,10 @@ trait RouterTrait
      * @param string $name group name
      * @return void
      */
-    public function group(string $uri, callable $callback, string $name = NULL) : void
+    public function group(string $uri, callable $callback, string $name = '') : void
     {
-        $this->group        .= $uri;
-        $this->groupName    .= $name . ".";
+        $this->group        .= '/' . trim($uri, '/');
+        $this->groupName    .= trim($name, '.') . '.';
         $callback($this);
         $this->group        = trim($this->group, $uri); // if recursive remove previous group
         $this->groupName    = trim($this->groupName, $name . ".");

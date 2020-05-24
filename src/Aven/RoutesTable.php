@@ -106,8 +106,8 @@ class RoutesTable implements RoutesTableInterface
                 "REQUEST_METHOD"=> strtoupper($this->route['method'][$i]),
                 "PARAMS_REGEX"  => isset($this->route['regex'][$i]) ? $this->route['regex'][$i] : [],
                 "ACTION"        => $this->route['action'][$i],
-                "NAME"          => trim($this->route['groupName'][$i] . $this->route['name'][$i], '.'),
-                "GROUP"         => '/' . $this->route['group'][$i] ?? trim($this->route['group'][$i], '/')
+                "NAME"          => preg_replace('/\.+/', '.', trim($this->route['groupName'][$i] . $this->route['name'][$i], '.')),
+                "GROUP"         => $this->route['group'][$i] ?? $this->route['group'][$i]
             );
         }
     }

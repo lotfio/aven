@@ -38,7 +38,7 @@ class RoutesTableTest extends TestCase
         $this->assertSame('controller', $route['ACTION']);
         $this->assertEmpty($route['PARAMS_REGEX']);
         $this->assertEmpty($route['NAME']);
-        $this->assertSame('/', $route['GROUP']);
+        $this->assertSame(NULL, $route['GROUP']);
     }
 
     /**
