@@ -79,11 +79,11 @@
 **3- named routes :**
 ```php
  <?php
-    $router->get('/',  function(){ return " this is get method";})->name('default');
+    $router->get('/',  function(){ return "this is get named route (default)";})->name('default');
 ```
 
 **4- redirects :**
-* `$router->redirect(string $routeName, array $params = [], $httpcode = 301)`
+* `$router->redirect(string $routeName, array $params = [], int $httpcode = 301)`
 ```php
  <?php
     // route 1 
@@ -106,12 +106,12 @@
 ```php
  <?php
 
-    $router->get('/test/(:int)',  function() use($router){}); // evaluates to /test/\d+
-    $router->get('/test/(:str)',  function() use($router){}); // evaluates to /test/\w+
+    $router->get('/test/(:int)',  function(){}); // evaluates to /test/\d+
+    $router->get('/test/(:str)',  function(){}); // evaluates to /test/\w+
 
     // optional parameters (if optional parameter uri should end with /)
-    $router->get('/test/(:id*)',  function() use($router){}); // optional id /test/ or /test/1
-    $router->get('/test/(:id?)',  function() use($router){}); // zero or one id /test/ or /test/0-9
+    $router->get('/test/(:id*)',  function(){}); // optional id /test/ or /test/1
+    $router->get('/test/(:id?)',  function(){}); // zero or one id /test/ or /test/0-9
     
 
 ```
@@ -120,10 +120,10 @@
 ```php
  <?php
     // override predefined param
-    $router->get('/test/(:str)',  function() use($router){})->regex(array(":str"=> '[my-reg-ex]'));
+    $router->get('/test/(:str)',  function(){})->regex(array(":str"=> '[my-reg-ex]'));
 
     // custom param
-    $router->get('/test/(:hola)',  function() use($router){})->regex(array(":hola"=> '[my-reg-ex]'));
+    $router->get('/test/(:hola)',  function(){})->regex(array(":hola"=> '[my-reg-ex]'));
 
 ```
 **7- route groups :**
