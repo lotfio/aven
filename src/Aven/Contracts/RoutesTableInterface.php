@@ -17,7 +17,7 @@ interface RoutesTableInterface
     public function addRoute(string $method, string $uri, $action, ?string $group = NULL, ?string $groupName);
 
     /**
-     * initilize routing table by creating an array
+     * initialize routing table by creating an array
      * that includes all the defined routes
      *
      * @return void

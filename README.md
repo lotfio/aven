@@ -12,7 +12,7 @@
         <img src="https://img.shields.io/badge/PHP-7-3498db.svg" alt="PHP 7" title="PHP 7">
     </a>    
     <a href="#">
-        <img src="https://img.shields.io/badge/version-0.3.0-27ae60.svg" alt="version" title="version">
+        <img src="https://img.shields.io/badge/version-0.4.0-27ae60.svg" alt="version" title="version">
     </a>
     <a href="#">
         <img src="https://img.shields.io/badge/coverage-50%25-95a5a6.svg" alt="coverage" title="coverage">
@@ -100,9 +100,9 @@
 **5- route parameters :**
 * you can use both parenthesis or curly braces for parameters 
 * predefind parameters:
-    - `:int`, `:integer`, `:num`, `:numeric`, `:number` = \d+
-    - `:str`   = \w+
-    - `:alpha` = [A-z]+
+    - `:int`, `:integer`, `:num`, `:numeric`, `:number` = **\d+**
+    - `:str`   = **\w+**
+    - `:alpha` = **[A-z]+**
 ```php
  <?php
 
