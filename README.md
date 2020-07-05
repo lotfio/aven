@@ -1,5 +1,5 @@
 <p align="center">
- 
+
 <img src="https://user-images.githubusercontent.com/18489496/38557718-c7fa6c12-3cc5-11e8-99f9-69e923e24ace.png" align="center" alt="logo" title="logo">
 
 
@@ -10,7 +10,7 @@
     </a>
     <a href="#">
         <img src="https://img.shields.io/badge/PHP-7-3498db.svg" alt="PHP 7" title="PHP 7">
-    </a>    
+    </a>
     <a href="#">
         <img src="https://img.shields.io/badge/version-0.4.0-27ae60.svg" alt="version" title="version">
     </a>
@@ -42,7 +42,7 @@
 
 
 ### :pencil2: Usage :
-**1- Quick use :** 
+**1- Quick use :**
 
 ```php
  <?php
@@ -51,8 +51,8 @@
     // here we are using $_SERVER['REQUEST_URI']
     // you can use $_GET['uri']
     $router = new Aven\Router($_SERVER['REQUEST_URI']);
- 
-    $router->get('/', function(){  // with a callback 
+
+    $router->get('/', function(){  // with a callback
         return "welcome from aven";
     });
 
@@ -60,20 +60,20 @@
     $router->get('/', "UsersController::method"); // controller static method
 
 
-    $router->init(); // initialize router 
+    $router->init(); // initialize router
 ```
-**2- Available routes :** 
-* `GET`, `POST`, `ANY`, `PUT`, `DELETE`, `HEAD` 
+**2- Available routes :**
+* `GET`, `POST`, `ANY`, `PUT`, `DELETE`, `HEAD`
 ```php
  <?php
 
-    $router->get('/',  function(){ return " this is get method"; }); 
+    $router->get('/',  function(){ return " this is get method"; });
     $router->post('/', function(){ return " this is post method"; });
     $router->any('/',  function(){ return " this is any method allows all"; });
 
-    $router->put('/',    function(){ return " this is put method. you should send $_POST['_method'] = 'put'"; }); 
-    $router->delete('/', function(){ return " this is delete method. you should send $_POST['_method'] = 'delete'"; }); 
-    $router->head('/',   function(){ return " this is head method. you should send $_POST['_method'] = 'head'"; }); 
+    $router->put('/',    function(){ return " this is put method. you should send $_POST['_method'] = 'put'"; });
+    $router->delete('/', function(){ return " this is delete method. you should send $_POST['_method'] = 'delete'"; });
+    $router->head('/',   function(){ return " this is head method. you should send $_POST['_method'] = 'head'"; });
 ```
 
 **3- named routes :**
@@ -86,7 +86,7 @@
 * `$router->redirect(string $routeName, array $params = [], int $httpcode = 301)`
 ```php
  <?php
-    // route 1 
+    // route 1
     $router->get('/',  function() use($router){  // accessing this route will redirect you to route2 means /hola
 
         $router->redirect('route2'); // if parametrised route you can pass array of parameters
@@ -98,7 +98,7 @@
 ```
 
 **5- route parameters :**
-* you can use both parenthesis or curly braces for parameters 
+* you can use both parenthesis or curly braces for parameters
 * predefind parameters:
     - `:int`, `:integer`, `:num`, `:numeric`, `:number` = **\d+**
     - `:str`   = **\w+**
@@ -112,7 +112,7 @@
     // optional parameters (if optional parameter uri should end with /)
     $router->get('/test/(:id*)',  function(){}); // optional id /test/ or /test/1
     $router->get('/test/(:id?)',  function(){}); // zero or one id /test/ or /test/0-9
-    
+
 
 ```
 **6- custom route parameters :**
@@ -131,7 +131,7 @@
 - you can have as many nested groups as you want
 ```php
  <?php
-   
+
    $router->group('/mygroup', function($router){  // groups adds prefixes to routes
 
         $router->get('/test',  function(){ return "from /mygroup/test" }); // evaluates to /mygroup/test
@@ -139,9 +139,9 @@
    });
 
     // multiple groups
-    $router->group('/group1', function($router){  
+    $router->group('/group1', function($router){
 
-        $router->group('/group2', function($router){  
+        $router->group('/group2', function($router){
 
             $router->get('/test',  function(){ return "from /group1/group2/test" }); // evaluates to /group1/group2/test
         });
@@ -149,7 +149,28 @@
 
 
 ```
-**8- additionl routes :**
+**8- route namespaces :**
+* `$router->namespace(string $uri,callable $callback)`
+- you can have as many nested namespaces as you want
+```php
+ <?php
+
+   $router->namespace('My\\Namespace', function($router){  // you can also use dots (My.Namespace) instead of \\
+        $router->get('/test',  "TestController@test"}); // evaluates to My\\Namespace\\TestController@test
+   });
+
+    // multiple groups
+    $router->namespace('ns1', function($router){
+
+        $router->namespace('ns2', function($router){
+
+            $router->get('/test',  "TestController@test"); // evaluates to ns1\\ns2\\TestController@test
+        });
+   });
+
+
+```
+**9- additionl routes :**
 * `$router->form(string $uri, $callback|$class, ?array $override, ?string $routeName)`
 ```php
  <?php
@@ -159,14 +180,14 @@
     // form route with class
     $router->form('/login', Login::class); // by default class should have showForm & submitForm
 
-    // override default form methods 
+    // override default form methods
     $router->form('/login', Login::class, ['get','post']);
 
-    // named form method 
+    // named form method
     $router->form('/login', Login::class, ['get','post'], 'login.form');
 
 ```
-**9- additionl routes :**
+**10- additionl routes :**
 * `$router->crud(string $uri, string $class, ?array $only, ?string $routeName)`
 ```php
  <?php
@@ -178,7 +199,7 @@
     // delete => DELETE with optional pareter user/delete/
     $router->crud('/user', User::class);
 
-    // disable some methods 
+    // disable some methods
     $router->crud('/user', User::class, ['c']); // only create
     $router->crud('/user', User::class, ['create']); // only create
     $router->crud('/user', User::class, ['c', 'u']); //  create & update
