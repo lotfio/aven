@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 declare(strict_types=1);
 
@@ -19,8 +19,8 @@ class RoutesFilter
 
     /**
      * apply filters method
-     * 
-     * apply user defined regex if any 
+     *
+     * apply user defined regex if any
      * apply custom regex
      *
      * @param array $routes
@@ -37,7 +37,11 @@ class RoutesFilter
             $uri  = str_replace('/', '\\/', $uri); // escape
 
             $route['GROUP'] = preg_replace('~\/+~', '/', $route['GROUP']);
-            
+
+            // append namespace
+            if(!$route['ACTION'] instanceof \Closure)
+                $route['ACTION'] = $route['NAMESPACE'] . $route['ACTION'];
+
             // user defined regex (from regex method)
             if(is_array($route['PARAMS_REGEX']) && count($route['PARAMS_REGEX']) > 0)
             {
@@ -51,7 +55,7 @@ class RoutesFilter
             // apply custom regex
             $uri = $this->replacePredefined(self::PREDEFINED_FILTERS, $uri);
 
-            $uri = "~^" . $uri . "$~"; 
+            $uri = "~^" . $uri . "$~";
 
             $route['REGEX_URI'] =  $uri; // ready
         }
@@ -59,7 +63,7 @@ class RoutesFilter
 
     /**
      * regex filter method
-     * 
+     *
      * should be named after what itis doing it is replacing and addding + by default
      *
      * @param string $pattern
@@ -73,12 +77,12 @@ class RoutesFilter
         {
             $subject = preg_replace_callback($pattern, function($m) use ($rep){
 
-                return (isset($m[count($m) - 1]) && ($m[count($m) - 1] == "?" || $m[count($m) - 1] == "*")) 
-                
-                ? "(" . $rep . "{$m[count($m) - 1]})" 
-                
+                return (isset($m[count($m) - 1]) && ($m[count($m) - 1] == "?" || $m[count($m) - 1] == "*"))
+
+                ? "(" . $rep . "{$m[count($m) - 1]})"
+
                 : "(" . $rep . "+)";
-    
+
             }, $subject);
         }
 

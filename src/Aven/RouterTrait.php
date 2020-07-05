@@ -26,6 +26,22 @@ trait RouterTrait
     }
 
     /**
+     * namespace route method
+     *
+     * @param  string   $nsp
+     * @param  callable $callback
+     * @return void
+     */
+    public function namespace(string $nsp, callable $callback) : void
+    {
+        $this->namespace   .= '\\' . trim(str_replace('.', '\\', $nsp), '\\') . '\\';
+        $this->namespace    = str_replace('\\\\', '\\', $this->namespace);
+
+        $callback($this);
+        $this->namespace    = trim($this->namespace, '\\' . trim(str_replace('.', '\\', $nsp), '\\') . '\\'); // if recursive remove previous namespace
+    }
+
+    /**
      * form route method
      *
      * @param string $uri

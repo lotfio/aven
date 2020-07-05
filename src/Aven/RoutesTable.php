@@ -22,13 +22,14 @@ class RoutesTable implements RoutesTableInterface
      * @var array
      */
     private $route = array(
-        'method'   => array(),
-        'uri'      => array(),
-        'regex'    => array(),
-        'action'   => array(),
-        'group'    => array(),
-        'groupName'=> array(),
-        'name'     => array()
+        'method'    => array(),
+        'uri'       => array(),
+        'regex'     => array(),
+        'action'    => array(),
+        'group'     => array(),
+        'groupName' => array(),
+        'name'      => array(),
+        'namespace' => array()
     );
 
     /**
@@ -41,7 +42,7 @@ class RoutesTable implements RoutesTableInterface
      * @param string|null $groupName
      * @return self
      */
-    public function addRoute(string $method, string $uri, $action, ?string $group = NULL, ?string $groupName = NULL) : self
+    public function addRoute(string $method, string $uri, $action, ?string $group = NULL, ?string $groupName = NULL, ?string $namespace) : self
     {
         if(!is_string($uri) || strpos($uri, '~') !== FALSE)
             throw new RoutesTableException("route uri ($uri) must be a valid string and (~) character is not allowed.");
@@ -57,21 +58,22 @@ class RoutesTable implements RoutesTableInterface
         $this->route['groupName'][]  = $groupName;
         $this->route['name'][]       = NULL;
 
+        $this->route['namespace'][]  = $namespace;
         return $this;
     }
 
     /**
      * add regex filter to a route
      *
-     * @param array $regexe
+     * @param array $regex
      * @return void
      */
-    public function regex(array $regexe) : self
+    public function regex(array $regex) : self
     {
-        if(!is_array($regexe))
+        if(!is_array($regex))
             throw new RoutesTableException("route regex must be an array.");
 
-        $this->route['regex'][count($this->route['regex']) - 1] = $regexe; // always get the last since it has been initialized by setup
+        $this->route['regex'][count($this->route['regex']) - 1] = $regex; // always get the last since it has been initialized by setup
         return $this;
     }
 
@@ -107,7 +109,8 @@ class RoutesTable implements RoutesTableInterface
                 "PARAMS_REGEX"  => isset($this->route['regex'][$i]) ? $this->route['regex'][$i] : [],
                 "ACTION"        => $this->route['action'][$i],
                 "NAME"          => preg_replace('/\.+/', '.', trim($this->route['groupName'][$i] . $this->route['name'][$i], '.')),
-                "GROUP"         => $this->route['group'][$i] ?? $this->route['group'][$i]
+                "GROUP"         => $this->route['group'][$i] ?? $this->route['group'][$i],
+                "NAMESPACE"     => $this->route['namespace'][$i] ?? $this->route['namespace'][$i],
             );
         }
     }
@@ -117,7 +120,7 @@ class RoutesTable implements RoutesTableInterface
      *
      * @return array
      */
-    public function &getRoutes() : array 
+    public function &getRoutes() : array
     {
         return $this->routes;
     }

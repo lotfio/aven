@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 declare(strict_types=1);
 
@@ -31,14 +31,14 @@ class Router
      *
      * @var object
      */
-    private $filter; 
+    private $filter;
 
     /**
      * routes validator
      *
      * @var object
      */
-    private $validator; 
+    private $validator;
 
     /**
      * available routes
@@ -60,6 +60,13 @@ class Router
      * @var ?string
      */
     private  $groupName = NULL;
+
+    /**
+     * namespace
+     *
+     * @var ?string
+     */
+    private $namespace  = NULL;
 
     /**
      * request uri
@@ -89,16 +96,16 @@ class Router
      * @return void
      */
     public function __call($method, $params)
-    {   
+    {
         if(!in_array(strtoupper($method), $this->availMethods))
             throw new RouterException("request method ($method) not allowed.");
 
         if(!isset($params[0]) || !isset($params[1]))
             throw new RouterException("route uri and action are required.");
-        
-        return $this->table->addRoute($method, $params[0], $params[1], $this->group, $this->groupName);
+
+        return $this->table->addRoute($method, $params[0], $params[1], $this->group, $this->groupName, $this->namespace);
     }
-    
+
     /**
      * initialize router
      *
@@ -106,10 +113,10 @@ class Router
      */
     public function init()
     {
-        // should be initiated after the calls 
+        // should be initiated after the calls
         $this->table->init();
 
-        // set routes 
+        // set routes
         $this->routes = $this->table->getRoutes();
 
         // should be filtered after initiated in table
