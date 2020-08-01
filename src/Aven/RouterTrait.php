@@ -26,17 +26,15 @@ trait RouterTrait
     /**
      * namespace route method
      *
-     * @param  string   $nsp
+     * @param  string   $namespace
      * @param  callable $callback
      * @return void
      */
-    public function namespace(string $nsp, callable $callback) : void
+    public function namespace(string $namespace, callable $callback) : void
     {
-        $this->namespace   .= '\\' . trim(str_replace('.', '\\', $nsp), '\\') . '\\';
-        $this->namespace    = str_replace('\\\\', '\\', $this->namespace);
-
+        $this->routesTable->setNamespace($namespace);
         $callback($this);
-        $this->namespace    = trim($this->namespace, '\\' . trim(str_replace('.', '\\', $nsp), '\\') . '\\'); // if recursive remove previous namespace
+        $this->routesTable->unsetNamespace($namespace);
     }
 
     /**
@@ -46,7 +44,7 @@ trait RouterTrait
      * @param callable $callback
      * @return void
      */
-    public function form(string $uri, $callback, array $customMethods = [], string $name = '') : void
+    public function form(string $uri, $callback, array $customMethods = []) : void
     {
         $this->group($uri, function($router) use ($callback, $customMethods){
 
@@ -62,7 +60,7 @@ trait RouterTrait
             $router->get('',  $get);
             $router->post('', $post);
 
-        }, $name);
+        });
     }
 
     /**
@@ -72,7 +70,7 @@ trait RouterTrait
      * @param callable $callback
      * @return void
      */
-    public function crud(string $uri, $controller, ?array $only = NULL, string $name = '') : void
+    public function crud(string $uri, $controller, ?array $only = NULL) : void
     {
         $allowed = ['c', 'r', 'u', 'd', 'create', 'read', 'update', 'delete'];
 
@@ -107,7 +105,7 @@ trait RouterTrait
             $router->delete('/delete/(:id)',"$controller@delete")->name("delete");
 
 
-        }, $name);
+        });
     }
 
     /**
@@ -122,9 +120,9 @@ trait RouterTrait
     {
         foreach($this->routes as $route)
         {
-            if($name === $route['NAME'])
+            if($name === $route['name'])
             {
-                $to = $route['REGEX_URI'];
+                $to = $route['uri'];
 
                 if(preg_match_all('~\(.*?\)|\{.*?\}~', $to, $m))
                 {

@@ -86,7 +86,9 @@ class Router
         // should be filtered after initiated in table
         $this->filter->applyFilters($routes);
 
+        //print_r($routes);
 
+        //die;
         // validate and invoke valid route
         $this->validator->isValidRoute($routes, $this->uri);
     }

@@ -122,7 +122,8 @@ class RoutesTable implements RoutesTableInterface
      */
     public function setNamespace(string $namespace) : void
     {
-        $this->routeNamespace .= $namespace;
+        $this->routeNamespace   .= '\\' . trim(str_replace('.', '\\', $namespace), '\\') . '\\';
+        $this->routeNamespace    = str_replace('\\\\', '\\', $this->routeNamespace);
     }
 
     /**
@@ -133,7 +134,7 @@ class RoutesTable implements RoutesTableInterface
      */
     public function unsetNamespace(string $namespace) : void
     {
-        $this->routeNamespace = trim($this->routeNamespace, $namespace);
+        $this->routeNamespace = trim($this->routeNamespace, '\\' . trim(str_replace('.', '\\', $namespace), '\\') . '\\');
     }
 
     /**
