@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Aven;
 
-class RoutesFilter
+class RoutesParser
 {
     /**
      * custom int regex matcher
@@ -26,13 +26,13 @@ class RoutesFilter
      * @param array $routes
      * @return void
      */
-    public function applyFilters(array &$routes) : void
+    public function parse(array &$routes) : void
     {
         $uri  = '';
 
         foreach($routes as &$route)
         {
-            $uri  = $this->filterOptional($route['group'] . $route['uri']);
+            $uri  = $this->replaceOptional($route['group'] . $route['uri']);
 
             // append namespace
             if(!$route['action'] instanceof \Closure)
@@ -84,18 +84,17 @@ class RoutesFilter
         return $subject;
     }
 
-
     /**
      * fix optional forward slash
      *
      * @param  string $uri
      * @return void
      */
-    private function filterOptional(string $uri)
+    private function replaceOptional(string $uri)
     {
         $uri = '/' . trim($uri, '/');
 
-        return preg_replace_callback('#\/\(.*\*\)|\/\{.*\*\}#', function($match) use ($uri){
+        return preg_replace_callback('#((\/\([^\/]+\*\))|(\/\{[^\/]+\*\}))#', function($match) use ($uri){
 
           return '/?'. ltrim($match[0], '/');
 
