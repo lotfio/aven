@@ -14,23 +14,21 @@ class RoutesTable implements RoutesTableInterface
      *
      * @var array
      */
-    private $routes = array();
+    private $routes = [];
 
     /**
-     * route method
+     * route group
      *
-     * @var array
+     * @var ?string
      */
-    private $route = array(
-        'method'    => array(),
-        'uri'       => array(),
-        'regex'     => array(),
-        'action'    => array(),
-        'group'     => array(),
-        'groupName' => array(),
-        'name'      => array(),
-        'namespace' => array()
-    );
+    private $routeGroup = null;
+
+    /**
+     * route group
+     *
+     * @var ?string
+     */
+    private $routeNamespace = null;
 
     /**
      * adding route method
@@ -38,28 +36,33 @@ class RoutesTable implements RoutesTableInterface
      * @param string $method
      * @param string $uri
      * @param mixed  $action
-     * @param string|null $group
-     * @param string|null $groupName
      * @return self
      */
-    public function addRoute(string $method, string $uri, $action, ?string $group = NULL, ?string $groupName = NULL, ?string $namespace) : self
+    public function add(string $method, string $uri, $action) : self
     {
-        if(!is_string($uri) || strpos($uri, '~') !== FALSE)
-            throw new RoutesTableException("route uri ($uri) must be a valid string and (~) character is not allowed.");
+        $this->routes[] = [
+            'method'    => strtoupper($method),
+            'uri'       => '/' . trim($uri, '/'),
+            'action'    => $action,
+            'regex'     => [],
+            'name'      => null,
+            'group'     => '/' . trim(preg_replace('~\/{2,}~', '/', $this->routeGroup), '/'),
+            'namespace' => $this->routeNamespace
+        ];
 
-        if(!$uri instanceof \Closure && !is_string($uri))
-            throw new RouterException("route action ($action) must be avalid string or a callback");
-
-        $this->route['method'][]     = $method;
-        $this->route['uri'][]        = $uri;
-        $this->route['regex'][]      = NULL;
-        $this->route['action'][]     = $action;
-        $this->route['group'][]      = $group;
-        $this->route['groupName'][]  = $groupName;
-        $this->route['name'][]       = NULL;
-
-        $this->route['namespace'][]  = $namespace;
         return $this;
+    }
+
+    /**
+     * current route element
+     *
+     * @param string $elem
+     * @param mixed $value
+     * @return void
+     */
+    private function current(string $elem, $value) : void
+    {
+        $this->routes[count($this->routes) - 1][$elem] = $value;
     }
 
     /**
@@ -73,7 +76,7 @@ class RoutesTable implements RoutesTableInterface
         if(!is_array($regex))
             throw new RoutesTableException("route regex must be an array.");
 
-        $this->route['regex'][count($this->route['regex']) - 1] = $regex; // always get the last since it has been initialized by setup
+        $this->current('regex', $regex);
         return $this;
     }
 
@@ -85,34 +88,52 @@ class RoutesTable implements RoutesTableInterface
      */
     public function name(string $name) : self
     {
-        if(in_array($name, $this->route['name']))
-            throw new RoutesTableException("error route name ($name) assigned to another route already.");
-
-        $this->route['name'][count($this->route['name']) - 1] = $name;
-
+        $this->current('name', $name);
         return $this;
     }
 
     /**
-     * setting up routing table
+     * set group
      *
+     * @param string $group
      * @return void
      */
-    public function init() : void
+    public function setGroup(string $group) : void
     {
-        for($i = 0; $i < sizeof($this->route['method']); $i++)
-        {
-            $this->routes[] = array(
-                "REQUEST_URI"   => "",
-                "REGEX_URI"     => '/' . trim($this->route['uri'][$i], '/'),
-                "REQUEST_METHOD"=> strtoupper($this->route['method'][$i]),
-                "PARAMS_REGEX"  => isset($this->route['regex'][$i]) ? $this->route['regex'][$i] : [],
-                "ACTION"        => $this->route['action'][$i],
-                "NAME"          => preg_replace('/\.+/', '.', trim($this->route['groupName'][$i] . $this->route['name'][$i], '.')),
-                "GROUP"         => $this->route['group'][$i] ?? $this->route['group'][$i],
-                "NAMESPACE"     => $this->route['namespace'][$i] ?? $this->route['namespace'][$i],
-            );
-        }
+        $this->routeGroup .= '/' . trim($group, '/') . '/';
+    }
+
+    /**
+     * unset group
+     *
+     * @param string $group
+     * @return void
+     */
+    public function unsetGroup(string $group) : void
+    {
+        $this->routeGroup = str_replace('/' . trim($group, '/') . '/', NULL, $this->routeGroup);
+    }
+
+    /**
+     * set namespace
+     *
+     * @param string $namespace
+     * @return void
+     */
+    public function setNamespace(string $namespace) : void
+    {
+        $this->routeNamespace .= $namespace;
+    }
+
+    /**
+     * unset namespace
+     *
+     * @param string $namespace
+     * @return void
+     */
+    public function unsetNamespace(string $namespace) : void
+    {
+        $this->routeNamespace = trim($this->routeNamespace, $namespace);
     }
 
     /**

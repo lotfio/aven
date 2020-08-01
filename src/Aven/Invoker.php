@@ -27,7 +27,7 @@ class Invoker
 
         throw new InvokerException("error action ($action), only callbacks and class methods are allowed.", 50);
     }
-    
+
     /**
      * invoke callback
      *
@@ -37,7 +37,7 @@ class Invoker
      */
     private function callback(callable $action, array $params)
     {
-        return $this->formatOutput(call_user_func($action, ...$params));
+        return formatOutput(call_user_func($action, ...$params));
     }
 
     /**
@@ -51,32 +51,13 @@ class Invoker
     private function classMethod(string $class, string $method, array $params)
     {
         if(!class_exists($class))
-            throw new InvokerException("class $class not found.", 40);
-        
+            throw new InvokerException("class ($class) not found.", 40);
+
         $ins = new $class();
 
         if(!method_exists($ins, $method))
-            throw new InvokerException("method $method does not exists in controller $class.", 40);
-        
-        return $this->formatOutput(call_user_func_array([$ins, $method], $params));
-    }
+            throw new InvokerException("method ($method) does not exists in controller $class.", 40);
 
-    /**
-     * format invoked callbacks output
-     *
-     * @param  mixed $output
-     * @return void
-     */
-    private function formatOutput($output)
-    {
-        if(gettype($output) == 'array' || gettype($output) == 'object')
-        {
-            header('Content-Type: application/json');
-            exit(
-                json_encode($output)
-            );
-        }
-
-        echo $output;
+        return formatOutput(call_user_func_array([$ins, $method], $params));
     }
 }

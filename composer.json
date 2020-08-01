@@ -11,7 +11,7 @@
 
     "minimum-stability": "dev",
     "prefer-stable": true,
-    
+
     "require": {
         "php"                : "^7.2"
     },
@@ -23,7 +23,10 @@
     "autoload" : {
         "psr-4" : {
             "Aven\\" : "src/Aven/"
-        }
+        },
+        "files": [
+            "src/Aven/helpers.php"
+        ]
     },
 
     "autoload-dev":{

@@ -19,16 +19,16 @@ class RoutesValidator
     {
         for($i = 0; $i < count($routes); $i++)
         {
-            if(preg_match($routes[$i]['REGEX_URI'], $uri, $m)) // if uri matches a route
+            if(preg_match($routes[$i]['uri'], $uri, $m)) // if uri matches a route
             {
                 // wrong http method
-                if(!$this->isValidHttpMethod($routes[$i]['REQUEST_METHOD']))
+                if(!$this->isValidHttpMethod($routes[$i]['method']))
                     continue; // check for other routes with same uri different method or exit not found
-                
-                // valid route
-                $routes[$i]['REQUEST_URI'] = $uri;
 
-                return (new Invoker)($routes[$i]['ACTION'], array_slice($m, 1));
+                // valid route
+                $routes[$i]['uri'] = $uri;
+
+                return (new Invoker)($routes[$i]['action'], array_slice($m, 1));
             }
         }
         // not found route
@@ -37,8 +37,8 @@ class RoutesValidator
 
     /**
      * check if valid http method
-     * 
-     * check GET or POST from server 
+     *
+     * check GET or POST from server
      * for   ANY allow all
      * for the rest method should be sent with http data _method
      *
@@ -50,7 +50,7 @@ class RoutesValidator
 
         if($method === $_SERVER['REQUEST_METHOD'] || $method === 'ANY')
             return TRUE;
-        
+
         if(isset($_POST['_method']) && strtoupper($_POST['_method']) === $method)
             return TRUE;
 

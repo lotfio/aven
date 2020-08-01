@@ -32,46 +32,41 @@ class RoutesFilter
 
         foreach($routes as &$route)
         {
-            $uri  = $route['GROUP'] . $route['REGEX_URI']; // append group
-            $uri  = preg_replace('~\/+~', '/', $uri);  // fix if duplicate forwardslashes
-            $uri  = str_replace('/', '\\/', $uri); // escape
-
-            $route['GROUP'] = preg_replace('~\/+~', '/', $route['GROUP']);
+            $uri  = $this->filterOptional($route['group'] . $route['uri']);
 
             // append namespace
-            if(!$route['ACTION'] instanceof \Closure)
-                $route['ACTION'] = $route['NAMESPACE'] . $route['ACTION'];
+            if(!$route['action'] instanceof \Closure)
+                $route['action'] = $route['namespace'] . $route['action'];
 
             // user defined regex (from regex method)
-            if(is_array($route['PARAMS_REGEX']) && count($route['PARAMS_REGEX']) > 0)
+            if(is_array($route['regex']) && count($route['regex']) > 0)
             {
-                foreach($route['PARAMS_REGEX'] as $key => $val)
+                foreach($route['regex'] as $key => $val)
                 {
                     $pattern = '~(\('. trim($key, '/') .'\))|(\{'. trim($key, '/') .'\})~';
                     $uri     = preg_replace($pattern, '(' . $val . ')', $uri);
                 }
             }
 
-            // apply custom regex
+            // apply predefined regex
             $uri = $this->replacePredefined(self::PREDEFINED_FILTERS, $uri);
 
             $uri = "~^" . $uri . "$~";
 
-            $route['REGEX_URI'] =  $uri; // ready
+            $route['uri'] =  $uri; // ready
         }
     }
 
     /**
      * regex filter method
      *
-     * should be named after what itis doing it is replacing and addding + by default
+     * should be named after what it is doing it is replacing and adding + by default
      *
-     * @param string $pattern
-     * @param string $rep
-     * @param string $subject
-     * @return void
+     * @param  string $pattern
+     * @param  string $subject
+     * @return string
      */
-    private function replacePredefined(array $patterns, string $subject)
+    private function replacePredefined(array $patterns, string $subject) : string
     {
         foreach($patterns as $pattern => $rep)
         {
@@ -87,5 +82,23 @@ class RoutesFilter
         }
 
         return $subject;
+    }
+
+
+    /**
+     * fix optional forward slash
+     *
+     * @param  string $uri
+     * @return void
+     */
+    private function filterOptional(string $uri)
+    {
+        $uri = '/' . trim($uri, '/');
+
+        return preg_replace_callback('#\/\(.*\*\)|\/\{.*\*\}#', function($match) use ($uri){
+
+          return '/?'. ltrim($match[0], '/');
+
+        } ,$uri);
     }
 }
