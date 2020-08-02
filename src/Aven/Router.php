@@ -9,6 +9,9 @@ use Aven\Contracts\RoutesTableInterface;
 
 class Router
 {
+    /**
+     * router trait
+     */
     use RouterTrait;
 
     /**
@@ -16,16 +19,23 @@ class Router
      *
      * @var array
      */
-    private $availMethods = array(
+    private $availMethods = [
         'GET', 'POST', 'PUT', 'DELETE', 'ANY', 'HEAD'
-    );
+    ];
 
     /**
-     * routes filter object
+     * routes table
      *
      * @var object
      */
-    private $filter;
+    private $routesTable;
+
+    /**
+     * routes parser object
+     *
+     * @var object
+     */
+    private $parser;
 
     /**
      * routes validator
@@ -33,6 +43,13 @@ class Router
      * @var object
      */
     private $validator;
+
+    /**
+     * avail routes
+     *
+     * @var array
+     */
+    private $routes;
 
     /**
      * request uri
@@ -51,7 +68,7 @@ class Router
         $this->uri = $uri;
 
         $this->routesTable  = new RoutesTable;
-        $this->filter       = new RoutesFilter;
+        $this->parser       = new RoutesParser;
         $this->validator    = new RoutesValidator;
     }
 
@@ -81,15 +98,12 @@ class Router
     public function init()
     {
         // set routes
-        $routes = $this->routesTable->getRoutes();
+        $this->routes = $this->routesTable->getRoutes();
 
-        // should be filtered after initiated in table
-        $this->filter->applyFilters($routes);
+        // parse routes and apply regex patterns
+        $this->parser->parse($this->routes);
 
-        //print_r($routes);
-
-        //die;
         // validate and invoke valid route
-        $this->validator->isValidRoute($routes, $this->uri);
+        $this->validator->isValidRoute($this->routes, $this->uri);
     }
 }

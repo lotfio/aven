@@ -40,21 +40,21 @@ trait RouterTrait
     /**
      * form route method
      *
-     * @param string $uri
-     * @param callable $callback
+     * @param  string $uri
+     * @param  mixed $action
      * @return void
      */
-    public function form(string $uri, $callback, array $customMethods = []) : void
+    public function form(string $uri, $action, array $customMethods = []) : void
     {
-        $this->group($uri, function($router) use ($callback, $customMethods){
+        $this->group($uri, function($router) use ($action, $customMethods){
 
-            $get  = $callback;
-            $post = $callback;
+            $get  = $action;
+            $post = $action;
 
-            if(is_string($callback))
+            if(is_string($action))
             {
-                $get   = isset($customMethods[0]) ? "$callback@{$customMethods[0]}" : "$callback@showForm";
-                $post  = isset($customMethods[1]) ? "$callback@{$customMethods[1]}" : "$callback@submitForm";
+                $get   = isset($customMethods[0]) ? "$action@{$customMethods[0]}" : "$action@showForm";
+                $post  = isset($customMethods[1]) ? "$action@{$customMethods[1]}" : "$action@submitForm";
             }
 
             $router->get('',  $get);
@@ -67,10 +67,11 @@ trait RouterTrait
      * crud route method
      *
      * @param string $uri
-     * @param callable $callback
+     * @param string $controller
+     * @param array|null $only
      * @return void
      */
-    public function crud(string $uri, $controller, ?array $only = NULL) : void
+    public function crud(string $uri, string $controller, ?array $only = NULL) : void
     {
         $allowed = ['c', 'r', 'u', 'd', 'create', 'read', 'update', 'delete'];
 
@@ -86,16 +87,16 @@ trait RouterTrait
             if(is_array($only))
             {
                 if(in_array('c', $only) || in_array('create', $only))
-                    $router->post('/create',     "$controller@create")->name("create");
+                    $router->post('/create',         "$controller@create")->name("create");
 
                 if(in_array('r', $only) || in_array('read', $only))
-                    $router->get('/read/(:id*)',        "$controller@read")->name("read");
+                    $router->get('/read/(:id*)',     "$controller@read")->name("read");
 
                 if(in_array('u', $only) || in_array('update', $only))
-                    $router->put('/update/(:id)',       "$controller@update")->name("update");
+                    $router->put('/update/(:id)',    "$controller@update")->name("update");
 
                 if(in_array('d', $only) || in_array('delete', $only))
-                    $router->delete('/delete/(:id)',    "$controller@delete")->name("delete");
+                    $router->delete('/delete/(:id)', "$controller@delete")->name("delete");
                 return;
             }
 
@@ -103,8 +104,6 @@ trait RouterTrait
             $router->get('/read/(:id*)',    "$controller@read")->name("read");
             $router->put('/update/(:id)',   "$controller@update")->name("update");
             $router->delete('/delete/(:id)',"$controller@delete")->name("delete");
-
-
         });
     }
 
@@ -124,7 +123,7 @@ trait RouterTrait
             {
                 $to = $route['uri'];
 
-                if(preg_match_all('~\(.*?\)|\{.*?\}~', $to, $m))
+                if(preg_match_all('~((\/\??\([^\/]+\*?\))|(\/\??\{[^\/]+\*?\}))~', $to, $m))
                 {
                     // check if number of parameters matches uri parameters
                     if(isset($m[0]) && count($m[0]) > 0 && count($m[0]) !== count($params))
@@ -132,7 +131,7 @@ trait RouterTrait
 
                     // replace provided params in uri params
                     for($i = 0; $i < count($m[0]); $i++)
-                        $to = str_replace($m[0][$i], $params[$i], $to);
+                        $to = str_replace($m[0][$i], '/' . $params[$i], $to);
                 }
 
                 $to = str_replace('\/', '/', trim($to, '~^$'));
