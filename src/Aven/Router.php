@@ -103,7 +103,10 @@ class Router
         // parse routes and apply regex patterns
         $this->parser->parse($this->routes);
 
-        // validate and invoke valid route
-        $this->validator->isValidRoute($this->routes, $this->uri);
+        // valid route
+        $validRoute = $this->validator->validRoute($this->routes, $this->uri);
+
+        // invoke
+        return (new Invoker)($validRoute['action'], $validRoute['params']);
     }
 }
