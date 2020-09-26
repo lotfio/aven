@@ -9,13 +9,13 @@ use Aven\Exceptions\RoutesValidatorException;
 class RoutesValidator
 {
     /**
-     * check valid route and invoke it
-     *
-     * @param array  $routes
-     * @param string $uri
-     * @return boolean
+     * check valid route
+     * 
+     * @param  array  $routes
+     * @param  string $uri
+     * @return array
      */
-    public function isValidRoute(array &$routes, string $uri)
+    public function validRoute(array &$routes, string $uri): array
     {
         for($i = 0; $i < count($routes); $i++)
         {
@@ -26,9 +26,10 @@ class RoutesValidator
                     continue; // check for other routes with same uri different method or exit not found
 
                 // valid route
-                $routes[$i]['uri'] = $uri;
-
-                return (new Invoker)($routes[$i]['action'], array_slice($m, 1));
+                $routes[$i]['uri']    = $uri;
+                $routes[$i]['params'] = array_slice($m, 1);
+ 
+                return $routes[$i];
             }
         }
         // not found route
@@ -43,9 +44,9 @@ class RoutesValidator
      * for the rest method should be sent with http data _method
      *
      * @param  string $method
-     * @return boolean
+     * @return bool
      */
-    private function isValidHttpMethod(string $method)
+    private function isValidHttpMethod(string $method): bool
     {
 
         if($method === $_SERVER['REQUEST_METHOD'] || $method === 'ANY')
