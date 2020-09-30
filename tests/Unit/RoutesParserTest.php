@@ -26,7 +26,7 @@ class RoutesParserTest extends TestCase
      */
     protected $routes = [
         [
-            'method'    => 'GET',
+            'method'    => '',
             'uri'       => '',
             'action'    => '',
             'regex'     => '',
