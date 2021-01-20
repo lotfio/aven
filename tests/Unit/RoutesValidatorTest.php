@@ -15,13 +15,13 @@ namespace Tests\Unit;
  */
 
 use Aven\Exceptions\RoutesValidatorException;
-use PHPUnit\Framework\TestCase;
 use Aven\RoutesValidator;
+use PHPUnit\Framework\TestCase;
 
 class RoutesValidatorTest extends TestCase
 {
     /**
-     * example route
+     * example route.
      *
      * @var array
      */
@@ -33,30 +33,30 @@ class RoutesValidatorTest extends TestCase
             'regex'     => '',
             'name'      => '',
             'group'     => '',
-            'namespace' => ''
-        ]
+            'namespace' => '',
+        ],
     ];
-    
+
     /**
-     * route validator
+     * route validator.
      *
      * @var object
      */
     protected $validator;
 
     /**
-     * set up
+     * set up.
      *
      * @return void
      */
-    public function setUp(): void
+    protected function setUp(): void
     {
-        $this->validator           = new RoutesValidator;
+        $this->validator = new RoutesValidator();
         $_SERVER['REQUEST_METHOD'] = 'GET';
     }
 
     /**
-     * test validate route
+     * test validate route.
      */
     public function testValidateRoute()
     {
